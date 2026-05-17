@@ -176,14 +176,16 @@ export default function FilesPanel() {
     queryKey: ['fm-folders'],
     queryFn: () => apiFetch<FolderNode[]>('/folders', token),
     enabled: !!token,
-    staleTime: 30_000,
+    staleTime: 8_000,
+    refetchInterval: 8_000,
   });
 
   const { data: managedFiles = [], isLoading: filesLoading } = useQuery({
     queryKey: ['fm-files-all'],
     queryFn: () => fetchAllManagedFiles(token),
     enabled: !!token,
-    staleTime: 10_000,
+    staleTime: 8_000,
+    refetchInterval: 8_000,
   });
 
   const displayName =
