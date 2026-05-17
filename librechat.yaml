@@ -246,6 +246,437 @@ endpoints:
         ⚖️ I'll generate structured strategy cards anchored to retrieved authorities.
 
 
+    # ── Legal Research Skills ───────────────────────────────────────────────────
+    # All 6 skills route to nyay-legal-research backend (port 8106).
+    # The "model" slug selects the SKILL.md (case-research, issue-analysis, etc.)
+
+    - name: "Case Research"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-case-research"]
+        fetch: false
+      modelDisplayLabel: "Case Research"
+      titleConvo: true
+      titleModel: "nyay-case-research"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Find, rank, verify, and analyse Indian case law. Judicial hierarchy weighting, negative treatment detection, three-source citation pipeline."
+      greeting: |
+        ⚖️ **Case Research**
+
+        I retrieve and verify Indian case law using the NyayAI judgment corpus.
+        Every citation is tagged [VERIFIED] or [VERIFY REQUIRED] before output.
+
+        **Tell me the legal issue** — I'll return ranked authorities with bench composition, holdings, and a research memo.
+
+        Example: *"Section 74 ICA 1872 liquidated damages without proof of loss"*
+
+    - name: "Issue Analysis"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-issue-analysis"]
+        fetch: false
+      modelDisplayLabel: "Issue Analysis"
+      titleConvo: true
+      titleModel: "nyay-issue-analysis"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Full five-step legal issue analysis: applicable law → verified precedents → synthesis → strategic options → risks."
+      greeting: |
+        ⚖️ **Issue Analysis**
+
+        Full five-step research workflow for complex matters.
+
+        Describe the matter — facts, forum, relief sought — and I'll deliver:
+        1. Applicable law and statutory framework
+        2. Verified precedents (three-source pipeline)
+        3. Legal synthesis and current position
+        4. Strategic options with strength/risk assessment
+        5. Recommended approach
+
+    - name: "Writ Jurisdiction"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-writ"]
+        fetch: false
+      modelDisplayLabel: "Writ Jurisdiction"
+      titleConvo: true
+      titleModel: "nyay-writ"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Writ maintainability analysis under Article 226 / Article 32 — alternate remedy, locus standi, delay/laches, relief matrix."
+      greeting: |
+        ⚖️ **Writ Jurisdiction**
+
+        Maintainability analysis for Article 226 (High Court) and Article 32 (Supreme Court) writ petitions.
+
+        Describe the impugned action, the petitioner, and the relief sought — I'll analyse maintainability, alternate remedy bar, delay, and recommend the appropriate writ.
+
+    - name: "Criminal Law"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-criminal"]
+        fetch: false
+      modelDisplayLabel: "Criminal Law"
+      titleConvo: true
+      titleModel: "nyay-criminal"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Criminal law research — bail jurisprudence (anticipatory/regular/statutory), FIR validity, charge sustainability, quashing. BNSS 2023 / BNS 2023 aware."
+      greeting: |
+        ⚖️ **Criminal Law**
+
+        Research under BNSS 2023 / BNS 2023 / BSA 2023 (post-July 2024) and CrPC / IPC / Evidence Act (pre-July 2024).
+
+        Describe the matter — FIR details, stage (bail/charge/trial/quashing), offence section — and I'll provide a structured research memo with verified authorities.
+
+    - name: "Commercial Disputes"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-commercial"]
+        fetch: false
+      modelDisplayLabel: "Commercial Disputes"
+      titleConvo: true
+      titleModel: "nyay-commercial"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Commercial dispute research — ICA 1872, Arbitration Act 1996, injunction standards, specific performance, limitation, Commercial Courts Act."
+      greeting: |
+        ⚖️ **Commercial Disputes**
+
+        Research for contract disputes, arbitration, injunctions, and commercial court matters.
+
+        Describe the dispute — contract type, forum (Civil Court / Commercial Court / Arbitration / DIAC / SIAC), relief sought — and I'll provide a research memo with applicable law and verified case law.
+
+    - name: "Constitutional Law"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-constitutional"]
+        fetch: false
+      modelDisplayLabel: "Constitutional Law"
+      titleConvo: true
+      titleModel: "nyay-constitutional"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Constitutional law research — fundamental rights (Articles 12–35), proportionality, Article 14 arbitrariness, PIL, judicial review, legislative competence."
+      greeting: |
+        ⚖️ **Constitutional Law**
+
+        Research on fundamental rights, proportionality doctrine, judicial review, and PIL.
+
+        Describe the constitutional question — article invoked, state action challenged, petitioner — and I'll analyse the constitutional position with landmark authorities.
+
+    # ── Litigation ─────────────────────────────────────────────────────────────
+    # All 8 skills route to NyayAI-Litigation-v1 backend (port 8105).
+    # The "model" slug selects the SKILL.md and LLM tier (simple/medium/complex).
+
+    - name: "Practice Setup"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-cold-start"]
+        fetch: false
+      modelDisplayLabel: "Practice Setup"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Set up your litigation practice profile — court landscape, risk calibration, citation style, integrations."
+      greeting: |
+        Welcome to Practice Setup!
+
+        I'll walk you through setting up your NyayAI litigation profile.
+
+        Tell me about your practice — are you a firm advocate, in-house counsel, or solo advocate?
+        Which courts do you primarily appear in?
+
+        Type **"start"** to begin, or **"--redo"** to overwrite an existing profile.
+
+    - name: "Case Intake"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-matter-intake"]
+        fetch: false
+      modelDisplayLabel: "Case Intake"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Open a new case — conflicts, risk triage, key dates, limitation analysis, writes case.md and _log.yaml."
+      greeting: |
+        Welcome to Case Intake!
+
+        Tell me about the new case — client name, what happened, and what relief is sought.
+
+        I'll ask follow-up questions to capture: conflicts clearance, risk triage, limitation deadline, outside advocate, and key dates.
+
+    - name: "Case Update"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-matter-update"]
+        fetch: false
+      modelDisplayLabel: "Case Update"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Log a hearing outcome, new development, or risk triage refresh — appends to history.md, refreshes limitation countdown."
+      greeting: |
+        Welcome to Case Update!
+
+        Which case are you updating? Give me the case slug (e.g. **"sharma-vs-abc-2025"**) and what happened — hearing outcome, new pleading served, court order received.
+
+    - name: "Portfolio Status"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-portfolio"]
+        fetch: false
+      modelDisplayLabel: "Portfolio Status"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Portfolio-wide rollup — risk distribution, upcoming hearings, limitation deadlines, preservation status, stale matters."
+      greeting: |
+        Welcome to Portfolio Status!
+
+        I'll pull up your full matter portfolio from _log.yaml.
+
+        Options:
+        - **"Show portfolio"** — full rollup
+        - **"Critical only"** — high-risk + limitation alarms only
+        - **"Limitation dashboard"** — deadlines ranked by urgency
+
+    - name: "Case Chronology"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-chronology"]
+        fetch: false
+      modelDisplayLabel: "Case Chronology"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Build a chronology from matter documents — dated events, Limitation Act analysis, List of Dates for petition or brief."
+      greeting: |
+        Welcome to Case Chronology!
+
+        Give me the matter slug and I'll extract a dated chronology from your matter documents.
+
+        Formats available: **working** (internal), **lod** (List of Dates for petition), **sof** (Statement of Facts).
+
+        Example: **"Build chronology for sharma-vs-abc-2025 --format=lod"**
+
+    - name: "Brief Section Drafter"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-brief-drafter"]
+        fetch: false
+      modelDisplayLabel: "Brief Section Drafter"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Draft a brief section — grounds, submissions, statement of facts — with NyayAI judgment citations and BNS/BNSS supersession check."
+      greeting: |
+        Welcome to Brief Section Drafter!
+
+        I draft petition sections, written arguments, and written statements — fully cited against the NyayAI SC/HC corpus, with BNS/BNSS supersession verified for all criminal provisions.
+
+        Tell me: **which matter**, **which section** (e.g. "grounds of challenge", "submissions on Issue 1"), and the **case theory** to anchor the draft.
+
+    - name: "Demand / Legal Notice"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-demand-draft"]
+        fetch: false
+      modelDisplayLabel: "Demand / Legal Notice"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Draft a legal notice or demand letter — s.80 CPC, s.138 NI Act, s.21 Arbitration, MSMED, DV Act — with pre-suit gate check."
+      greeting: |
+        Welcome to Demand / Legal Notice!
+
+        I draft legal notices with Indian pre-suit notice gate checks:
+        s.80 CPC · s.138 NI Act · s.21 Arbitration Act · s.18 MSMED · s.4 DV Act
+
+        Tell me: **notice type**, **matter slug**, **facts**, and **demand / relief claimed**.
+        I'll run the gate check first and flag any privilege or admission risks before drafting.
+
+    - name: "Legal Hold"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-legal-hold"]
+        fetch: false
+      modelDisplayLabel: "Legal Hold"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      description: "Issue, refresh, or release evidence preservation notices — s.65B certificate notes, legal_hold fields in _log.yaml, next-refresh calendar."
+      greeting: |
+        Welcome to Legal Hold!
+
+        I issue, refresh, and release evidence preservation notices with s.65B certificate requirements flagged for electronic records.
+
+        Options:
+        - **"[slug] --issue"** — draft new preservation memo
+        - **"[slug] --refresh"** — update scope / custodians
+        - **"[slug] --release"** — release hold with audit note
+        - **"--status"** — portfolio-wide hold status
+
+
     # ── Naya-AI (Ollama) ───────────────────────────────────────────────────────
     # No `group` field → does NOT appear in the NyayFeatureNav.
     # Continues to appear only in the standard model selector dropdown.

@@ -17,12 +17,37 @@ import {
   LEGAL_RESEARCH_NAV_SECTION,
   LEGAL_RESEARCH_V3_ENDPOINT,
   LEGAL_RESEARCH_V3_MODEL,
+  RESEARCH_CASE_ENDPOINT,           RESEARCH_CASE_MODEL,
+  RESEARCH_ISSUE_ENDPOINT,          RESEARCH_ISSUE_MODEL,
+  RESEARCH_WRIT_ENDPOINT,           RESEARCH_WRIT_MODEL,
+  RESEARCH_CRIMINAL_ENDPOINT,       RESEARCH_CRIMINAL_MODEL,
+  RESEARCH_COMMERCIAL_ENDPOINT,     RESEARCH_COMMERCIAL_MODEL,
+  RESEARCH_CONSTITUTIONAL_ENDPOINT, RESEARCH_CONSTITUTIONAL_MODEL,
 } from '../legal-research/config';
 import {
   DOC_DRAFTING_LABEL,
   DOC_DRAFTING_PRIMARY_ENDPOINT,
   DOC_DRAFTING_PRIMARY_MODEL,
 } from '../doc-drafting/config';
+import {
+  LITIGATION_NAV_SECTION,
+  LITIGATION_PRACTICE_SETUP_ENDPOINT,
+  LITIGATION_PRACTICE_SETUP_MODEL,
+  LITIGATION_CASE_INTAKE_ENDPOINT,
+  LITIGATION_CASE_INTAKE_MODEL,
+  LITIGATION_CASE_UPDATE_ENDPOINT,
+  LITIGATION_CASE_UPDATE_MODEL,
+  LITIGATION_PORTFOLIO_ENDPOINT,
+  LITIGATION_PORTFOLIO_MODEL,
+  LITIGATION_CHRONOLOGY_ENDPOINT,
+  LITIGATION_CHRONOLOGY_MODEL,
+  LITIGATION_BRIEF_DRAFTER_ENDPOINT,
+  LITIGATION_BRIEF_DRAFTER_MODEL,
+  LITIGATION_DEMAND_DRAFT_ENDPOINT,
+  LITIGATION_DEMAND_DRAFT_MODEL,
+  LITIGATION_LEGAL_HOLD_ENDPOINT,
+  LITIGATION_LEGAL_HOLD_MODEL,
+} from '../litigation/config';
 
 export interface NavItem {
   label: string;
@@ -67,30 +92,124 @@ export const NYAY_NAV_CONFIG: NavSection[] = [
     ],
   },
   {
-    sectionLabel: LEGAL_RESEARCH_NAV_SECTION,
+    sectionLabel: LEGAL_RESEARCH_V3_ENDPOINT,
     iconPath:
       'M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z',
+    items: [
+      {
+        label: 'Case Research',
+        endpointName: RESEARCH_CASE_ENDPOINT,
+        model: RESEARCH_CASE_MODEL,
+      },
+      {
+        label: 'Issue Analysis',
+        endpointName: RESEARCH_ISSUE_ENDPOINT,
+        model: RESEARCH_ISSUE_MODEL,
+      },
+      {
+        label: 'Writ Jurisdiction',
+        endpointName: RESEARCH_WRIT_ENDPOINT,
+        model: RESEARCH_WRIT_MODEL,
+      },
+      {
+        label: 'Criminal Law',
+        endpointName: RESEARCH_CRIMINAL_ENDPOINT,
+        model: RESEARCH_CRIMINAL_MODEL,
+      },
+      {
+        label: 'Commercial Disputes',
+        endpointName: RESEARCH_COMMERCIAL_ENDPOINT,
+        model: RESEARCH_COMMERCIAL_MODEL,
+      },
+      {
+        label: 'Constitutional Law',
+        endpointName: RESEARCH_CONSTITUTIONAL_ENDPOINT,
+        model: RESEARCH_CONSTITUTIONAL_MODEL,
+      },
+    ],
+  },
+  {
+    sectionLabel: LEGAL_RESEARCH_NAV_SECTION,
+    iconPath:
+      'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z',
     items: [
       {
         label: LEGAL_RESEARCH_LABEL,
         endpointName: LEGAL_RESEARCH_PRIMARY_ENDPOINT,
         model: LEGAL_RESEARCH_PRIMARY_MODEL,
       },
+    ],
+  },
+  {
+    sectionLabel: LITIGATION_NAV_SECTION,
+    // Scales of justice icon
+    iconPath:
+      'M12 3L2 9l10 6 10-6-10-6zM2 17l10 6 10-6M2 12l10 6 10-6',
+    items: [
       {
-        label: LEGAL_RESEARCH_V3_ENDPOINT,
-        endpointName: LEGAL_RESEARCH_V3_ENDPOINT,
-        model: LEGAL_RESEARCH_V3_MODEL,
+        label: 'Practice Setup',
+        endpointName: LITIGATION_PRACTICE_SETUP_ENDPOINT,
+        model: LITIGATION_PRACTICE_SETUP_MODEL,
+      },
+      {
+        label: 'Case Intake',
+        endpointName: LITIGATION_CASE_INTAKE_ENDPOINT,
+        model: LITIGATION_CASE_INTAKE_MODEL,
+      },
+      {
+        label: 'Case Update',
+        endpointName: LITIGATION_CASE_UPDATE_ENDPOINT,
+        model: LITIGATION_CASE_UPDATE_MODEL,
+      },
+      {
+        label: 'Portfolio Status',
+        endpointName: LITIGATION_PORTFOLIO_ENDPOINT,
+        model: LITIGATION_PORTFOLIO_MODEL,
+      },
+      {
+        label: 'Case Chronology',
+        endpointName: LITIGATION_CHRONOLOGY_ENDPOINT,
+        model: LITIGATION_CHRONOLOGY_MODEL,
+      },
+      {
+        label: 'Brief Section Drafter',
+        endpointName: LITIGATION_BRIEF_DRAFTER_ENDPOINT,
+        model: LITIGATION_BRIEF_DRAFTER_MODEL,
+      },
+      {
+        label: 'Demand / Legal Notice',
+        endpointName: LITIGATION_DEMAND_DRAFT_ENDPOINT,
+        model: LITIGATION_DEMAND_DRAFT_MODEL,
+      },
+      {
+        label: 'Legal Hold',
+        endpointName: LITIGATION_LEGAL_HOLD_ENDPOINT,
+        model: LITIGATION_LEGAL_HOLD_MODEL,
       },
     ],
   },
 ];
 
 export const NYAY_ENDPOINT_LABELS: Record<string, string> = {
-  [DOC_DRAFTING_PRIMARY_ENDPOINT]: DOC_DRAFTING_LABEL,
-  [CONTRACT_REVIEW_PRIMARY_ENDPOINT]: CONTRACT_REVIEW_LABEL,
-  [PAGEINDEX_CONTRACT_PRIMARY_ENDPOINT]: PAGEINDEX_CONTRACT_LABEL,
-  [LEGAL_RESEARCH_PRIMARY_ENDPOINT]: LEGAL_RESEARCH_LABEL,
-  [LEGAL_RESEARCH_V3_ENDPOINT]: LEGAL_RESEARCH_V3_ENDPOINT,
+  [DOC_DRAFTING_PRIMARY_ENDPOINT]:           DOC_DRAFTING_LABEL,
+  [CONTRACT_REVIEW_PRIMARY_ENDPOINT]:        CONTRACT_REVIEW_LABEL,
+  [PAGEINDEX_CONTRACT_PRIMARY_ENDPOINT]:     PAGEINDEX_CONTRACT_LABEL,
+  [LEGAL_RESEARCH_PRIMARY_ENDPOINT]:         LEGAL_RESEARCH_LABEL,
+  [LEGAL_RESEARCH_V3_ENDPOINT]:              LEGAL_RESEARCH_V3_ENDPOINT,
+  [RESEARCH_CASE_ENDPOINT]:                  'Case Research',
+  [RESEARCH_ISSUE_ENDPOINT]:                 'Issue Analysis',
+  [RESEARCH_WRIT_ENDPOINT]:                  'Writ Jurisdiction',
+  [RESEARCH_CRIMINAL_ENDPOINT]:              'Criminal Law',
+  [RESEARCH_COMMERCIAL_ENDPOINT]:            'Commercial Disputes',
+  [RESEARCH_CONSTITUTIONAL_ENDPOINT]:        'Constitutional Law',
+  [LITIGATION_PRACTICE_SETUP_ENDPOINT]:      'Practice Setup',
+  [LITIGATION_CASE_INTAKE_ENDPOINT]:         'Case Intake',
+  [LITIGATION_CASE_UPDATE_ENDPOINT]:         'Case Update',
+  [LITIGATION_PORTFOLIO_ENDPOINT]:           'Portfolio Status',
+  [LITIGATION_CHRONOLOGY_ENDPOINT]:          'Case Chronology',
+  [LITIGATION_BRIEF_DRAFTER_ENDPOINT]:       'Brief Section Drafter',
+  [LITIGATION_DEMAND_DRAFT_ENDPOINT]:        'Demand / Legal Notice',
+  [LITIGATION_LEGAL_HOLD_ENDPOINT]:          'Legal Hold',
 };
 
 export const NYAY_ENDPOINTS = new Set(Object.keys(NYAY_ENDPOINT_LABELS));

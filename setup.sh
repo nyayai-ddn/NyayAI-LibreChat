@@ -14,6 +14,9 @@ echo -e "${BLUE}LibreChat - Setup Script${NC}"
 echo -e "${BLUE}========================================${NC}"
 echo ""
 
+# Always operate from the active project root
+cd "$(dirname "$0")"
+
 # Check prerequisites
 echo -e "${YELLOW}Checking prerequisites...${NC}"
 
@@ -53,7 +56,6 @@ setup_env_file() {
     fi
 }
 
-cd LibreChat
 setup_env_file ".env"
 
 # Check for librechat.yaml
@@ -65,16 +67,12 @@ elif [ -f "librechat.yaml" ]; then
     echo -e "${GREEN}✓ librechat.yaml already exists${NC}"
 fi
 
-cd ..
-
 echo ""
 
 # Build LibreChat services
 echo -e "${YELLOW}Building LibreChat Docker services...${NC}"
-cd LibreChat
 docker-compose build --no-cache
 echo -e "${GREEN}✓ LibreChat services built${NC}"
-cd ..
 
 echo ""
 echo -e "${GREEN}========================================${NC}"
@@ -85,24 +83,24 @@ echo ""
 echo -e "${BLUE}Next steps:${NC}"
 echo ""
 echo -e "${YELLOW}1. Start LibreChat:${NC}"
-echo "   cd LibreChat && docker-compose up -d"
+echo "   docker-compose up -d"
 echo ""
 echo -e "${YELLOW}2. Access LibreChat:${NC}"
 echo "   http://localhost:3080"
 echo ""
 echo -e "${YELLOW}3. Configure LegalContract endpoint (optional):${NC}"
-echo "   Edit LibreChat/librechat.yaml to point to:"
+echo "   Edit librechat.yaml to point to:"
 echo "   - Backend: http://legal-contract-backend:8000"
 echo "   - Vector DB: http://contract-vectordb:6333"
 echo ""
 echo -e "${YELLOW}4. Stop LibreChat:${NC}"
-echo "   cd LibreChat && docker-compose down"
+echo "   docker-compose down"
 echo ""
 echo -e "${BLUE}View logs:${NC}"
-echo "   cd LibreChat && docker-compose logs -f"
+echo "   docker-compose logs -f"
 echo ""
 echo -e "${BLUE}Note:${NC} To use LibreChat with NyayAI Contract Review backend:"
 echo "  1. Start Contract Review services: paralx-06/./start-all.sh"
-echo "  2. Start LibreChat: ./setup.sh && cd LibreChat && docker-compose up -d"
+echo "  2. Start LibreChat: ./setup.sh && docker-compose up -d"
 echo "  3. Use 'LegalContract' endpoint in LibreChat UI"
 echo ""

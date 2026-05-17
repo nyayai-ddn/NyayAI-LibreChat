@@ -4,19 +4,51 @@ const normalize = (value?: string | null) => value?.trim().toLowerCase() ?? '';
 
 export const LEGAL_RESEARCH_PRIMARY_ENDPOINT = 'Legal Research';
 export const LEGAL_RESEARCH_V3_ENDPOINT = 'Legal Research v3';
+
+// NyayAI Legal Research skill endpoints (nyay-legal-research backend, port 8106)
+export const RESEARCH_CASE_ENDPOINT           = 'Case Research';
+export const RESEARCH_ISSUE_ENDPOINT          = 'Issue Analysis';
+export const RESEARCH_WRIT_ENDPOINT           = 'Writ Jurisdiction';
+export const RESEARCH_CRIMINAL_ENDPOINT       = 'Criminal Law';
+export const RESEARCH_COMMERCIAL_ENDPOINT     = 'Commercial Disputes';
+export const RESEARCH_CONSTITUTIONAL_ENDPOINT = 'Constitutional Law';
+
 export const LEGAL_RESEARCH_ENDPOINT_ALIASES = [
   LEGAL_RESEARCH_PRIMARY_ENDPOINT,
   LEGAL_RESEARCH_V3_ENDPOINT,
+  RESEARCH_CASE_ENDPOINT,
+  RESEARCH_ISSUE_ENDPOINT,
+  RESEARCH_WRIT_ENDPOINT,
+  RESEARCH_CRIMINAL_ENDPOINT,
+  RESEARCH_COMMERCIAL_ENDPOINT,
+  RESEARCH_CONSTITUTIONAL_ENDPOINT,
 ] as const;
+
 export const LEGAL_RESEARCH_PRIMARY_MODEL = 'Legal Research Assistant';
 export const LEGAL_RESEARCH_V3_MODEL = 'legal-research-v3';
+
+// Model slugs — must match config/skills.yaml in nyay-research-backend
+export const RESEARCH_CASE_MODEL           = 'nyay-case-research';
+export const RESEARCH_ISSUE_MODEL          = 'nyay-issue-analysis';
+export const RESEARCH_WRIT_MODEL           = 'nyay-writ';
+export const RESEARCH_CRIMINAL_MODEL       = 'nyay-criminal';
+export const RESEARCH_COMMERCIAL_MODEL     = 'nyay-commercial';
+export const RESEARCH_CONSTITUTIONAL_MODEL = 'nyay-constitutional';
+
 export const LEGAL_RESEARCH_MODEL_ALIASES = [
   LEGAL_RESEARCH_PRIMARY_MODEL,
   'legal-research',
   'Legal Research',
   LEGAL_RESEARCH_V3_MODEL,
   LEGAL_RESEARCH_V3_ENDPOINT,
+  RESEARCH_CASE_MODEL,
+  RESEARCH_ISSUE_MODEL,
+  RESEARCH_WRIT_MODEL,
+  RESEARCH_CRIMINAL_MODEL,
+  RESEARCH_COMMERCIAL_MODEL,
+  RESEARCH_CONSTITUTIONAL_MODEL,
 ] as const;
+
 export const LEGAL_RESEARCH_LABEL = 'Legal Research';
 export const LEGAL_RESEARCH_NAV_SECTION = 'Legal Research';
 

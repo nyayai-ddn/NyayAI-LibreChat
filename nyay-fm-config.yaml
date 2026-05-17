@@ -1,0 +1,33 @@
+# nyay-fm-config.yaml
+# NyayAI File Manager configuration.
+# Mount at /app/nyay-fm-config.yaml (via docker-compose.override.yml).
+# Overridable at runtime via NYAY_FM_CONFIG_PATH env var.
+
+file_manager:
+  # NyayAI folder hierarchy provisioned lazily on first write per user:
+  #
+  #   NyayAI/
+  #     Litigation/
+  #       Practice Profile/   ← CLAUDE.md stored here
+  #       Cases/              ← {slug}.md files stored here
+
+  # Root folder and sub-folder names. Change requires re-running provisioner.
+  root_folder:             "NyayAI"
+  litigation_subfolder:    "Litigation"
+  practice_profile_folder: "Practice Profile"
+  cases_folder:            "Cases"
+
+  # Whether NyayAI-managed folders appear in the File Manager sidebar.
+  # false = system folders are hidden (clean UX for end users).
+  # true  = visible (useful during onboarding and debugging).
+  system_folders_visible: false
+
+firm:
+  # company_slug is the field on the LibreChat User model that maps to the
+  # per-firm S3 bucket. Set this on all users belonging to the same firm
+  # using scripts/firm_setup.py before going live.
+  #
+  # Firm-level practice profile lives in the firm admin user's File Manager
+  # under Practice Profile/CLAUDE.md. Designate the firm admin user ID below.
+  firm_admin_user_id: ""   # fill in after running firm_setup.py
+  company_slug:       ""   # must match the company_slug on User records
