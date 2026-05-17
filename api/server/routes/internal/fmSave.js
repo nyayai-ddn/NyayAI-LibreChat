@@ -2,26 +2,41 @@
  * api/server/routes/internal/fmSave.js
  *
  * Internal service-to-service route called by the NyayAI Litigation Backend
- * to save generated files (CLAUDE.md, case.md) into the LibreChat File Manager.
+ * to save generated files into the LibreChat File Manager (MongoDB + S3/local).
  *
  * Protected by NYAY_SERVICE_KEY env var — never expose to the public internet.
- * Export: factory function — call require('./routes/internal/fmSave')(appConfig)
  *
  * POST /api/internal/fm-save
  * Headers: x-nyay-service-key: <NYAY_SERVICE_KEY>
- * Body: { user_id, folder_name, filename, content, mime_type? }
+ * Body:
+ *   user_id      string   required — LibreChat MongoDB user _id (author)
+ *   filename     string   required — e.g. "case.md"
+ *   content      string   required — UTF-8 text content
+ *   folder_type  string   optional — "practice-profile" | "portfolio" | "case" |
+ *                                    "demand" | "inbound" | "oc-status"
+ *                                    Defaults to legacy "folder_name" field.
+ *   folder_name  string   optional — legacy: leaf folder name at depth 2
+ *   slug         string   optional — required for folder_type case/demand/inbound/oc-status
+ *   scope        string   optional — "user" (default) | "firm"
+ *   doc_type     string   optional — e.g. "case-profile", "case-history", "notice-draft"
+ *   version      number   optional — for versioned docs (element-chart-v2, etc.)
+ *   mime_type    string   optional — defaults to "text/markdown"
+ *
  * Returns: { file_id, folder_id, filepath }
  */
 
-const fs = require('fs');
+const fs   = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const express = require('express');
 const { FileSources, FileContext } = require('librechat-data-provider');
-const { createFile } = require('~/models/File');
-const { getUserById } = require('~/models');
+const { createFile }    = require('~/models/File');
+const { getUserById }   = require('~/models');
 const { getStrategyFunctions } = require('~/server/services/Files/strategies');
-const { ensureNyayLitigationFolder } = require('~/server/services/NyayFolderProvisioner');
+const {
+  ensureNyayLitigationFolder,
+  resolveFolderForType,
+} = require('~/server/services/NyayFolderProvisioner');
 
 // ── Service key guard ──────────────────────────────────────────────────────────
 function requireServiceKey(req, res, next) {
@@ -37,67 +52,92 @@ function requireServiceKey(req, res, next) {
 }
 
 /**
+ * Resolve the target folder _id from request body.
+ * Supports both the new folder_type/slug API and the legacy folder_name API.
+ */
+async function _resolveFolderId(userId, body) {
+  const { folder_type, slug, folder_name } = body;
+  if (folder_type) {
+    return resolveFolderForType(userId, folder_type, slug);
+  }
+  // Legacy: folder_name = depth-2 leaf name (e.g. "Practice Profile", "Cases")
+  return ensureNyayLitigationFolder(userId, folder_name || 'Practice Profile');
+}
+
+/**
  * Factory: returns the Express router, wired to the active file storage strategy.
- * @param {import('~/config/AppConfig').AppConfig} appConfig
  */
 module.exports = function createFmSaveRouter(appConfig) {
   const router = express.Router();
 
-  // ── POST /api/internal/fm-save ──────────────────────────────────────────────
   router.post('/fm-save', requireServiceKey, async (req, res) => {
     try {
       const {
         user_id,
-        folder_name = 'Practice Setup',
         filename,
         content,
+        scope     = 'user',
+        doc_type,
+        version,
         mime_type = 'text/markdown',
+        slug,
       } = req.body;
 
       if (!user_id || !filename || !content) {
         return res.status(400).json({ error: 'user_id, filename, and content are required.' });
       }
 
-      // ── 1. Provision NyayAI/Litigation/{folder_name} folder tree ────────────
-      const folderId = await ensureNyayLitigationFolder(user_id, folder_name);
+      // For firm-scoped writes, use the firm admin user_id as the owner so all
+      // firm members can query it. Fall back to the requesting user if not configured.
+      const firmAdminId = process.env.NYAY_FIRM_ADMIN_USER_ID;
+      const ownerId     = (scope === 'firm' && firmAdminId) ? firmAdminId : user_id;
 
-      // ── 2. Save file using the configured storage strategy ───────────────────
-      const fileSource = appConfig?.fileStrategy ?? FileSources.local;
+      // ── Provision the correct folder ─────────────────────────────────────────
+      const folderId = await _resolveFolderId(ownerId, req.body);
 
-      const buffer = Buffer.from(content, 'utf8');
-      const fileUuid = uuidv4();
+      // ── Save file using the configured storage strategy ───────────────────────
+      const fileSource    = appConfig?.fileStrategy ?? FileSources.local;
+      const buffer        = Buffer.from(content, 'utf8');
+      const fileUuid      = uuidv4();
       const storedFilename = `${fileUuid}__${filename}`;
 
       let filepath;
       if (fileSource === FileSources.local) {
-        // Local strategy: write directly to uploads_root/{userId}/{file}.
-        // saveLocalBuffer('uploads') nests an extra directory level which breaks
-        // getLocalFileStream's path resolution — so we write directly here.
         const uploadsRoot = appConfig?.paths?.uploads || path.join(process.cwd(), 'uploads');
-        const userDir = path.join(uploadsRoot, user_id.toString());
+        const userDir     = path.join(uploadsRoot, ownerId.toString());
         fs.mkdirSync(userDir, { recursive: true });
         fs.writeFileSync(path.join(userDir, storedFilename), buffer);
-        filepath = `/uploads/${user_id}/${storedFilename}`;
+        filepath = `/uploads/${ownerId}/${storedFilename}`;
       } else {
-        // Cloud strategy (S3, Firebase, Azure): use the strategy's saveBuffer.
-        // These strategies need user context for bucket/path resolution.
         const { saveBuffer } = getStrategyFunctions(fileSource);
-        const user = await getUserById(user_id, 'username company_slug');
+        const owner = await getUserById(ownerId, 'username company_slug');
         filepath = await saveBuffer({
-          userId:      user_id,
-          username:    user?.username,
-          companySlug: user?.company_slug,
+          userId:      ownerId,
+          username:    owner?.username,
+          companySlug: owner?.company_slug,
           buffer,
           fileName:    storedFilename,
           basePath:    'uploads',
         });
       }
 
-      // ── 3. Create (or upsert) the File record ────────────────────────────────
+      // ── Build nyay metadata ───────────────────────────────────────────────────
+      const nyayMeta = { scope };
+      if (doc_type)  nyayMeta.docType   = doc_type;
+      if (slug)      nyayMeta.caseSlug  = slug;
+      if (version != null) nyayMeta.version = version;
+
+      // Denormalise companySlug for firm-wide queries without a JOIN.
+      if (scope === 'firm') {
+        const author = await getUserById(user_id, 'company_slug');
+        if (author?.company_slug) nyayMeta.companySlug = author.company_slug;
+      }
+
+      // ── Create (or upsert) the File record ────────────────────────────────────
       await createFile(
         {
           file_id:  fileUuid,
-          user:     user_id,
+          user:     ownerId,
           filename: filename,
           filepath: filepath,
           source:   fileSource,
@@ -105,10 +145,11 @@ module.exports = function createFmSaveRouter(appConfig) {
           bytes:    buffer.byteLength,
           context:  FileContext.message_attachment,
           metadata: {
-            fileManager: { folderId: folderId },
+            fileManager: { folderId },
+            nyay:        nyayMeta,
           },
         },
-        true, // disableTTL — file should persist
+        true, // disableTTL
       );
 
       return res.status(201).json({ file_id: fileUuid, folder_id: folderId, filepath });

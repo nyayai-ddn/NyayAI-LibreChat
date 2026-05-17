@@ -148,6 +148,7 @@ const startServer = async () => {
   app.use('/api/willgen', require('./routes/willgen'));
   app.use('/api/internal', require('./routes/internal/fmSave')(appConfig));
   app.use('/api/internal', require('./routes/internal/nyayFile')(appConfig));
+  app.use('/api/internal', require('./routes/internal/nyayCaseLog')());
 
   app.use(ErrorController);
 
