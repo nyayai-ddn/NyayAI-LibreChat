@@ -677,6 +677,245 @@ endpoints:
         - **"--status"** — portfolio-wide hold status
 
 
+    - name: "Profile Customization"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-profile-customize"]
+        fetch: false
+      modelDisplayLabel: "Profile Customization"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Customise your practice profile — amend risk thresholds, court landscape, house style, or integration settings without a full re-interview."
+      greeting: |
+        Welcome to Profile Customization!
+
+        Tell me what you'd like to update in your practice profile — risk calibration, court list, citation style, or any other section.
+
+        Type **"show profile"** to see the current state first.
+
+    - name: "Case Workspace"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-case-workspace"]
+        fetch: false
+      modelDisplayLabel: "Case Workspace"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Open a case workspace — pull up case.md, history, documents, and limitation status in one view for open-ended work on a matter."
+      greeting: |
+        Welcome to Case Workspace!
+
+        Which case would you like to work on? Give me the case slug (e.g. **"sharma-vs-abc-2025"**) and I'll load the full case file, history, and document index.
+
+    - name: "Case Briefing"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-case-briefing"]
+        fetch: false
+      modelDisplayLabel: "Case Briefing"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Generate a concise case briefing — facts, legal issues, posture, next hearing, risk status — for a partner, client, or board note."
+      greeting: |
+        Welcome to Case Briefing!
+
+        Give me a case slug and the audience (partner / client / board) and I'll produce a structured briefing with the key facts, issues, posture, risk, and next steps.
+
+    - name: "Close Case"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-case-close"]
+        fetch: false
+      modelDisplayLabel: "Close Case"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Close a matter — record outcome, final cost, release legal hold, archive to closed status, draft closure note."
+      greeting: |
+        Welcome to Close Case!
+
+        Which case are you closing? Tell me the case slug, the outcome (settled / decree / dismissed / withdrawn / other), and the effective date. I'll update the registry and release any active legal hold.
+
+    - name: "Privilege Review"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-privilege-review"]
+        fetch: false
+      modelDisplayLabel: "Privilege Review"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Review documents for legal professional privilege (LPP) and litigation privilege — applies Indian Evidence Act / Bharatiya Sakshya Adhiniyam standards."
+      greeting: |
+        Welcome to Privilege Review!
+
+        Paste or upload the document(s) to review for privilege. I'll apply Indian LPP standards (legal professional privilege + litigation privilege) and flag each document as: **Privileged / Potentially privileged / Not privileged**.
+
+    - name: "Witness Exam Prep"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-witness-prep"]
+        fetch: false
+      modelDisplayLabel: "Witness Exam Prep"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Prepare examination-in-chief affidavit, cross-examination questions, and interrogatories for a witness — grounded in the case record."
+      greeting: |
+        Welcome to Witness Exam Prep!
+
+        Tell me: case slug, witness name and role, and what you need — **EIC affidavit**, **cross-examination questions**, or **interrogatories**.
+
+        I'll draft against the case record and flag inconsistencies with prior statements.
+
+    - name: "Element / Claim Chart"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-element-chart"]
+        fetch: false
+      modelDisplayLabel: "Element / Claim Chart"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Build an element chart or claim chart mapping each legal element to the evidence — used for infringement / revocation analysis."
+      greeting: |
+        Welcome to Element / Claim Chart!
+
+        Tell me: case slug, claim type (**infringement** or **revocation**), and the relevant claims / elements. I'll build a structured chart mapping each element to supporting or opposing evidence.
+
+    - name: "Legal Notice Intake"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-legal-notice-intake"]
+        fetch: false
+      modelDisplayLabel: "Legal Notice Intake"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Pre-drafting intake for an outbound legal notice — captures parties, facts, notice type, statutory basis (s.80 CPC / s.138 NI Act / s.21 Arbitration), leverage, and BATNA."
+      greeting: |
+        Welcome to Legal Notice Intake!
+
+        Before drafting, I'll capture the full pre-notice analysis — parties, facts, notice type, statutory pre-conditions, leverage, and BATNA.
+
+        Tell me: **notice type** (payment / breach-cure / cheque-dishonour / arbitration / s.80 CPC / other) and the facts. I'll run the Indian pre-suit gate check.
+
+    - name: "Inbound Notice Triage"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-inbound-triage"]
+        fetch: false
+      modelDisplayLabel: "Inbound Notice Triage"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Triage an inbound legal notice or demand — extract fields, assess merit, check supersession, cross-check portfolio, present response options."
+      greeting: |
+        Welcome to Inbound Notice Triage!
+
+        Paste the notice text or upload the document. I'll extract structured fields, assess the statutory basis under Indian law, run a supersession check (IPC/CrPC → BNS/BNSS), and present response options with a recommendation.
+
+    - name: "Court Process Triage"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-court-process"]
+        fetch: false
+      modelDisplayLabel: "Court Process Triage"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Triage incoming court processes — summons, notices, orders — extract deadlines, identify procedural obligations, flag urgency."
+      greeting: |
+        Welcome to Court Process Triage!
+
+        Paste or upload the court process (summons, order, notice) and tell me the case slug if it relates to an existing matter. I'll extract all deadlines, procedural obligations, and urgency flags.
+
+    - name: "Outside Counsel Status"
+      apiKey: "nyayai-litigation-key"
+      baseURL: "http://host.docker.internal:8105/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-oc-status"]
+        fetch: false
+      modelDisplayLabel: "Outside Counsel Status"
+      group: "Litigation"
+      titleConvo: true
+      summarize: false
+      forcePrompt: false
+      dropParams: [frequency_penalty, presence_penalty, top_p, stop]
+      description: "Draft outside counsel status request emails for active matters — one per case, structured with hearing dates, next steps, and cost-to-date."
+      greeting: |
+        Welcome to Outside Counsel Status!
+
+        I'll draft status request emails to outside counsel for all active matters with assigned OC. Options:
+        - **"All active"** — draft for every active matter with OC assigned
+        - **"[slug]"** — draft for a specific matter
+
     # ── Naya-AI (Ollama) ───────────────────────────────────────────────────────
     # No `group` field → does NOT appear in the NyayFeatureNav.
     # Continues to appear only in the standard model selector dropdown.

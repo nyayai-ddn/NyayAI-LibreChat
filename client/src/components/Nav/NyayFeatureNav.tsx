@@ -78,6 +78,16 @@ function SectionIcon({ path, active }: { path: string; active: boolean }) {
   );
 }
 
+const GroupDivider = memo(function GroupDivider({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-1.5 px-3 pb-0.5 pt-2">
+      <span className="truncate text-[10px] font-semibold uppercase tracking-wider text-text-tertiary">
+        {label}
+      </span>
+    </div>
+  );
+});
+
 const SubItem = memo(function SubItem({
   item,
   onSelect,
@@ -173,12 +183,21 @@ export default function NyayFeatureNav() {
     [newConversation, navigate],
   );
 
-  const visibleSections = NYAY_NAV_CONFIG.map((section) => ({
-    ...section,
-    items: section.items.filter(
-      (item) => endpointsConfig && (endpointsConfig as Record<string, unknown>)[item.endpointName],
-    ),
-  })).filter((section) => section.items.length > 0);
+  const visibleSections = NYAY_NAV_CONFIG.map((section) => {
+    // Keep dividers as-is; filter non-divider items by live endpoint presence.
+    const filtered = section.items.filter(
+      (item) =>
+        item.divider ||
+        (endpointsConfig && (endpointsConfig as Record<string, unknown>)[item.endpointName]),
+    );
+    // Remove dividers that have no real items following them (dangling headers).
+    const cleaned = filtered.filter((item, idx) => {
+      if (!item.divider) return true;
+      // Keep the divider only if a non-divider item appears after it.
+      return filtered.slice(idx + 1).some((next) => !next.divider);
+    });
+    return { ...section, items: cleaned };
+  }).filter((section) => section.items.some((item) => !item.divider));
 
   if (visibleSections.length === 0) {
     return null;
@@ -200,14 +219,18 @@ export default function NyayFeatureNav() {
             />
             {isOpen && (
               <div className="mb-0.5 flex flex-col gap-0.5">
-                {items.map((item) => (
-                  <SubItem
-                    key={item.endpointName}
-                    item={item}
-                    onSelect={handleSelect}
-                    isActive={item.endpointName === activeEndpoint}
-                  />
-                ))}
+                {items.map((item, idx) =>
+                  item.divider ? (
+                    <GroupDivider key={`divider-${idx}`} label={item.label} />
+                  ) : (
+                    <SubItem
+                      key={item.endpointName}
+                      item={item}
+                      onSelect={handleSelect}
+                      isActive={item.endpointName === activeEndpoint}
+                    />
+                  ),
+                )}
               </div>
             )}
           </div>
