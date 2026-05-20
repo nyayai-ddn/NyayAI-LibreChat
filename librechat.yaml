@@ -444,6 +444,39 @@ endpoints:
 
         Describe the constitutional question — article invoked, state action challenged, petitioner — and I'll analyse the constitutional position with landmark authorities.
 
+    - name: "Argument Stress Test"
+      apiKey: "nyayai-research-key"
+      baseURL: "http://host.docker.internal:8106/v1"
+      headers:
+        X-LibreChat-Session: '{{LIBRECHAT_BODY_CONVERSATIONID}}'
+        X-LibreChat-User: '{{LIBRECHAT_USER_ID}}'
+      models:
+        default: ["nyay-stress-test"]
+        fetch: false
+      modelDisplayLabel: "Argument Stress Test"
+      titleConvo: true
+      titleModel: "nyay-stress-test"
+      summarize: false
+      forcePrompt: false
+      dropParams:
+        - user
+        - frequency_penalty
+        - presence_penalty
+        - top_p
+        - stop
+      addParams:
+        max_tokens: 16000
+        stream: true
+      description: "Stress-test your legal argument — find every contra case, score proposition vulnerabilities HIGH/MEDIUM/SECURE, build the opponent's playbook, and get a concrete fortification plan."
+      greeting: |
+        ⚖️ **Argument Stress Test**
+
+        Paste your argument and I'll find every case that cuts against it.
+
+        I'll decompose your argument into propositions, run contra-framed searches across the SC judgment corpus, score each proposition's vulnerability, build the opponent's likely playbook, and give you a concrete fortification plan for every weak point — before the hearing.
+
+        Paste your written submission or bullet-point argument to begin.
+
     # ── Litigation ─────────────────────────────────────────────────────────────
     # All 8 skills route to NyayAI-Litigation-v1 backend (port 8105).
     # The "model" slug selects the SKILL.md and LLM tier (simple/medium/complex).

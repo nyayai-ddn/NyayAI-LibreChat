@@ -12,6 +12,7 @@ export const RESEARCH_WRIT_ENDPOINT           = 'Writ Jurisdiction';
 export const RESEARCH_CRIMINAL_ENDPOINT       = 'Criminal Law';
 export const RESEARCH_COMMERCIAL_ENDPOINT     = 'Commercial Disputes';
 export const RESEARCH_CONSTITUTIONAL_ENDPOINT = 'Constitutional Law';
+export const RESEARCH_STRESS_TEST_ENDPOINT    = 'Argument Stress Test';
 
 export const LEGAL_RESEARCH_ENDPOINT_ALIASES = [
   LEGAL_RESEARCH_PRIMARY_ENDPOINT,
@@ -22,6 +23,7 @@ export const LEGAL_RESEARCH_ENDPOINT_ALIASES = [
   RESEARCH_CRIMINAL_ENDPOINT,
   RESEARCH_COMMERCIAL_ENDPOINT,
   RESEARCH_CONSTITUTIONAL_ENDPOINT,
+  RESEARCH_STRESS_TEST_ENDPOINT,
 ] as const;
 
 export const LEGAL_RESEARCH_PRIMARY_MODEL = 'Legal Research Assistant';
@@ -34,6 +36,7 @@ export const RESEARCH_WRIT_MODEL           = 'nyay-writ';
 export const RESEARCH_CRIMINAL_MODEL       = 'nyay-criminal';
 export const RESEARCH_COMMERCIAL_MODEL     = 'nyay-commercial';
 export const RESEARCH_CONSTITUTIONAL_MODEL = 'nyay-constitutional';
+export const RESEARCH_STRESS_TEST_MODEL    = 'nyay-stress-test';
 
 export const LEGAL_RESEARCH_MODEL_ALIASES = [
   LEGAL_RESEARCH_PRIMARY_MODEL,
@@ -47,6 +50,7 @@ export const LEGAL_RESEARCH_MODEL_ALIASES = [
   RESEARCH_CRIMINAL_MODEL,
   RESEARCH_COMMERCIAL_MODEL,
   RESEARCH_CONSTITUTIONAL_MODEL,
+  RESEARCH_STRESS_TEST_MODEL,
 ] as const;
 
 export const LEGAL_RESEARCH_LABEL = 'Legal Research';

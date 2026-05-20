@@ -35,7 +35,7 @@ services:
   #    - "11434:11434"
   #  volumes:
   #    # - ./ollama:/root/.ollama  # Persistent storage for models
-  #    - /Users/pawangupta/.ollama:/root/.ollama  # Persistent storage for models
+  #    - /Users/akshajg/.ollama:/root/.ollama  # Persistent storage for models
     # Uncomment below if you have NVIDIA GPU
     # deploy:
     #   resources:

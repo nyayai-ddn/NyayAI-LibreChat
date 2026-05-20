@@ -23,6 +23,7 @@ import {
   RESEARCH_CRIMINAL_ENDPOINT,       RESEARCH_CRIMINAL_MODEL,
   RESEARCH_COMMERCIAL_ENDPOINT,     RESEARCH_COMMERCIAL_MODEL,
   RESEARCH_CONSTITUTIONAL_ENDPOINT, RESEARCH_CONSTITUTIONAL_MODEL,
+  RESEARCH_STRESS_TEST_ENDPOINT,    RESEARCH_STRESS_TEST_MODEL,
 } from '../legal-research/config';
 import {
   DOC_DRAFTING_LABEL,
@@ -135,6 +136,11 @@ export const NYAY_NAV_CONFIG: NavSection[] = [
         label: 'Constitutional Law',
         endpointName: RESEARCH_CONSTITUTIONAL_ENDPOINT,
         model: RESEARCH_CONSTITUTIONAL_MODEL,
+      },
+      {
+        label: 'Argument Stress Test',
+        endpointName: RESEARCH_STRESS_TEST_ENDPOINT,
+        model: RESEARCH_STRESS_TEST_MODEL,
       },
     ],
   },
@@ -278,6 +284,7 @@ export const NYAY_ENDPOINT_LABELS: Record<string, string> = {
   [RESEARCH_CRIMINAL_ENDPOINT]:                 'Criminal Law',
   [RESEARCH_COMMERCIAL_ENDPOINT]:               'Commercial Disputes',
   [RESEARCH_CONSTITUTIONAL_ENDPOINT]:           'Constitutional Law',
+  [RESEARCH_STRESS_TEST_ENDPOINT]:              'Argument Stress Test',
   [LITIGATION_PRACTICE_SETUP_ENDPOINT]:         'Practice Setup',
   [LITIGATION_CASE_INTAKE_ENDPOINT]:            'Case Intake',
   [LITIGATION_CASE_UPDATE_ENDPOINT]:            'Case Update',
