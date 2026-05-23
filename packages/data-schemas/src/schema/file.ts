@@ -80,6 +80,7 @@ const file: Schema<IMongoFile> = new Schema(
       fileManager: {
         folderId: String,
       },
+      nyay: Schema.Types.Mixed,
     },
     expiresAt: {
       type: Date,

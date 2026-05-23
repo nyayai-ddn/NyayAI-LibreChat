@@ -5,6 +5,7 @@ import { Folder } from 'lucide-react';
 import { useChatContext } from '~/Providers/ChatContext';
 import { useAuthContext } from '~/hooks';
 import type { ExtendedFile } from '~/common';
+import { FmActionsMenu } from '~/features/agents/vernacular';
 
 type FolderNode = {
   id: string | null;
@@ -154,6 +155,32 @@ function getFileBadgeLabel(file: ManagedFile): string {
 
 function formatFileCount(count: number): string {
   return `${count} file${count === 1 ? '' : 's'}`;
+}
+
+function isOcrSupportedFile(filename: string, type: string): boolean {
+  const lower = filename.toLowerCase();
+  return (
+    type === 'application/pdf' ||
+    lower.endsWith('.pdf') ||
+    lower.endsWith('.docx') ||
+    lower.endsWith('.doc')
+  );
+}
+
+function isTextFile(filename: string): boolean {
+  const lower = filename.toLowerCase();
+  return lower.endsWith('.md') || lower.endsWith('.txt');
+}
+
+/** Generated files (OCR output, translations, summaries) are hidden from the tree. */
+function isGeneratedFile(file: ManagedFile): boolean {
+  return !!(file.metadata?.nyay as Record<string, unknown> | undefined)?.parentFileId;
+}
+
+const LEGACY_OCR_SUFFIXES = ['-ocr.md', '-en.md', '-smry.md', '__extracted.txt', '__translated_en.txt', '__summary.txt'];
+
+function isLegacyOcrChild(filename: string): boolean {
+  return LEGACY_OCR_SUFFIXES.some((s) => filename.endsWith(s));
 }
 
 function flattenFolders(nodes: FolderNode[]): FolderNode[] {
@@ -344,6 +371,17 @@ export default function FilesPanel() {
     [explorerModel.filesById, selectedIds],
   );
 
+  // IDs of generated files (OCR outputs) — hidden from the tree
+  const generatedFileIds = useMemo(() => {
+    const ids = new Set<string>();
+    for (const file of managedFiles) {
+      if (isGeneratedFile(file) || isLegacyOcrChild(file.filename)) {
+        ids.add(file.id);
+      }
+    }
+    return ids;
+  }, [managedFiles]);
+
   useEffect(() => {
     if (!selectedFolderId) {
       return;
@@ -414,6 +452,9 @@ export default function FilesPanel() {
       setSelectedIds(new Set());
       queryClient.invalidateQueries({ queryKey: ['fm-files-all'] });
       queryClient.invalidateQueries({ queryKey: ['fm-folders'] });
+    },
+    onError: (err: Error) => {
+      window.alert(`Delete failed: ${err.message}`);
     },
   });
 
@@ -549,30 +590,68 @@ export default function FilesPanel() {
   const unfiledIndeterminate =
     unfiledSelectedCount > 0 && unfiledSelectedCount < explorerModel.unfiledFiles.length;
 
+  const handleAttachFileId = (attachFileId: string, attachFilename: string) => {
+    const f = managedFiles.find((mf) => mf.file_id === attachFileId);
+    if (!f) return;
+    setFiles((current) => {
+      const next = new Map(current);
+      next.set(f.id, {
+        progress: 1,
+        attached: true,
+        file_id: f.id,
+        filepath: f.filepath,
+        preview: f.filepath,
+        type: f.type,
+        filename: attachFilename,
+        source: f.source as ExtendedFile['source'],
+        size: f.size,
+        metadata: f.metadata as ExtendedFile['metadata'],
+      });
+      return next;
+    });
+  };
+
   const renderFileRow = (file: ManagedFile, depth: number) => {
     const isFocused = focusedNode.type === 'file' && focusedNode.id === file.id;
+    const isOcrSupported = isOcrSupportedFile(file.filename, file.type);
+    const isTextDoc = isTextFile(file.filename);
+    const parentFileId = (file.metadata?.nyay as Record<string, unknown> | undefined)?.parentFileId as string | undefined;
 
     return (
-      <div
-        key={file.id}
-        className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ${
-          isFocused ? 'bg-surface-hover' : 'hover:bg-surface-hover'
-        }`}
-        style={{ paddingLeft: `${depth * 16 + 8}px` }}
-        onClick={() => {
-          setFocusedNode({ type: 'file', id: file.id });
-        }}
-      >
-        <div onClick={(event) => event.stopPropagation()}>
-          <SelectionCheckbox
-            checked={selectedIds.has(file.id)}
-            onChange={() => toggleFileSelection(file.id)}
-          />
+      <div key={file.id}>
+        <div
+          className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm ${
+            isFocused ? 'bg-surface-hover' : 'hover:bg-surface-hover'
+          }`}
+          style={{ paddingLeft: `${depth * 16 + 8}px` }}
+          onClick={() => setFocusedNode({ type: 'file', id: file.id })}
+        >
+          <div onClick={(event) => event.stopPropagation()}>
+            <SelectionCheckbox
+              checked={selectedIds.has(file.id)}
+              onChange={() => toggleFileSelection(file.id)}
+            />
+          </div>
+          <span className="inline-flex min-w-10 items-center justify-center rounded border border-border-light px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary">
+            {getFileBadgeLabel(file)}
+          </span>
+          <span className="truncate">{file.filename}</span>
+          <div className="ml-auto shrink-0" onClick={(e) => e.stopPropagation()}>
+            <FmActionsMenu
+              fileId={file.file_id}
+              filename={file.filename}
+              isOcrSupported={isOcrSupported}
+              isTextDoc={isTextDoc}
+              parentFileId={parentFileId}
+              onAttachFile={(fid, fname) => handleAttachFileId(fid, fname)}
+              onDeleteFile={() => {
+                if (window.confirm(`Delete "${file.filename}"?`)) {
+                  deleteFilesMutation.mutate([file.id]);
+                }
+              }}
+            />
+          </div>
         </div>
-        <span className="inline-flex min-w-10 items-center justify-center rounded border border-border-light px-1.5 py-0.5 text-[10px] font-semibold text-text-secondary">
-          {getFileBadgeLabel(file)}
-        </span>
-        <span className="truncate">{file.filename}</span>
       </div>
     );
   };

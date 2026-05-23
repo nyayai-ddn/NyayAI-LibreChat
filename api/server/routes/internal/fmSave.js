@@ -13,7 +13,7 @@
  *   filename     string   required — e.g. "case.md"
  *   content      string   required — UTF-8 text content
  *   folder_type  string   optional — "practice-profile" | "portfolio" | "case" |
- *                                    "demand" | "inbound" | "oc-status"
+ *                                    "demand" | "inbound" | "oc-status" | "vernacular"
  *                                    Defaults to legacy "folder_name" field.
  *   folder_name  string   optional — legacy: leaf folder name at depth 2
  *   slug         string   optional — required for folder_type case/demand/inbound/oc-status
@@ -65,6 +65,20 @@ async function _resolveFolderId(userId, body) {
 }
 
 /**
+ * Look up the folder that contains a given file and return its _id.
+ * Used to place generated files in the same folder as the source PDF.
+ */
+async function _folderIdFromParent(parentFileId) {
+  try {
+    const { File } = require('~/db/models');
+    const parent = await File.findOne({ file_id: parentFileId }, { 'metadata.fileManager.folderId': 1 }).lean();
+    return parent?.metadata?.fileManager?.folderId ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Factory: returns the Express router, wired to the active file storage strategy.
  */
 module.exports = function createFmSaveRouter(appConfig) {
@@ -93,7 +107,16 @@ module.exports = function createFmSaveRouter(appConfig) {
       const ownerId     = (scope === 'firm' && firmAdminId) ? firmAdminId : user_id;
 
       // ── Provision the correct folder ─────────────────────────────────────────
-      const folderId = await _resolveFolderId(ownerId, req.body);
+      // If parent_file_id is supplied, place generated file in the same folder
+      // as the source file (including Unfiled — folderId = null is intentional).
+      // Only fall back to _resolveFolderId when no parent is given at all.
+      const { parent_file_id } = req.body;
+      let folderId;
+      if (parent_file_id) {
+        folderId = await _folderIdFromParent(parent_file_id); // null = Unfiled, that's fine
+      } else {
+        folderId = await _resolveFolderId(ownerId, req.body);
+      }
 
       // ── Save file using the configured storage strategy ───────────────────────
       const fileSource    = appConfig?.fileStrategy ?? FileSources.local;
@@ -123,9 +146,10 @@ module.exports = function createFmSaveRouter(appConfig) {
 
       // ── Build nyay metadata ───────────────────────────────────────────────────
       const nyayMeta = { scope };
-      if (doc_type)  nyayMeta.docType   = doc_type;
-      if (slug)      nyayMeta.caseSlug  = slug;
-      if (version != null) nyayMeta.version = version;
+      if (doc_type)       nyayMeta.docType      = doc_type;
+      if (slug)           nyayMeta.caseSlug     = slug;
+      if (version != null) nyayMeta.version     = version;
+      if (parent_file_id) nyayMeta.parentFileId = parent_file_id;
 
       // Denormalise companySlug for firm-wide queries without a JOIN.
       if (scope === 'firm') {
