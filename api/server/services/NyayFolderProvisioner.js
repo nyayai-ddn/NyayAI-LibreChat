@@ -21,8 +21,9 @@
 
 const FileFolder = require('~/models/FileFolder');
 
-const ROOT_FOLDER       = 'NyayAI';
-const LITIGATION_FOLDER = 'Litigation';
+const ROOT_FOLDER        = 'NyayAI';
+const LITIGATION_FOLDER  = 'Litigation';
+const VERNACULAR_FOLDER  = 'Vernacular';
 
 // ── Depth-2 leaf provisioners ──────────────────────────────────────────────────
 
@@ -96,6 +97,16 @@ async function getNyayRootFolderId(userId) {
   return root._id.toString();
 }
 
+/**
+ * Ensures NyayAI/Vernacular exists (depth 1) and returns its _id.
+ * Used by the OCR service to store extracted, translated, and summary files.
+ */
+async function ensureNyayVernacularFolder(userId) {
+  const root = await _findOrCreate(userId, ROOT_FOLDER, null, 0);
+  const folder = await _findOrCreate(userId, VERNACULAR_FOLDER, root._id.toString(), 1);
+  return folder._id.toString();
+}
+
 // ── Resolve folder _id from a folder_type + optional slug ─────────────────────
 
 /**
@@ -132,6 +143,8 @@ async function resolveFolderForType(userId, folderType, slug) {
     case 'oc-status':
       if (!slug) throw new Error('slug required for folder_type=oc-status');
       return ensureNyayOCStatusFolder(userId, slug);
+    case 'vernacular':
+      return ensureNyayVernacularFolder(userId);
     default:
       // Fallback: treat as a depth-2 leaf folder name
       return ensureNyayLitigationFolder(userId, folderType);
@@ -186,6 +199,7 @@ module.exports = {
   ensureNyayDemandFolder,
   ensureNyayInboundFolder,
   ensureNyayOCStatusFolder,
+  ensureNyayVernacularFolder,
   resolveFolderForType,
   getNyayRootFolderId,
 };

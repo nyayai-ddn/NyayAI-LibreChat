@@ -22,6 +22,8 @@ services:
     environment:
 #     - OLLAMA_BASE_URL=http://ollama:11434  # Note: Changed to use Docker network
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      # OCR service — referenced by the /api/nyay/ocr proxy routes
+      - OCR_SERVICE_URL=http://nyay-ocr:8100
     networks:
       - default
       - paralx-network
@@ -44,6 +46,34 @@ services:
     #         - driver: nvidia
     #           count: all
     #           capabilities: [gpu]
+
+  # NyayAI OCR Service — Vernacular document extraction and translation
+  nyay-ocr:
+    build:
+      context: ../NyayAI-LangTranslate-v1
+      dockerfile: Dockerfile
+    container_name: nyay-ocr
+    restart: always
+    ports:
+      - "8100:8100"
+    environment:
+      - SARVAM_API_KEY=${SARVAM_API_KEY}
+      - SARVAM_WEBHOOK_BASE_URL=${SARVAM_WEBHOOK_BASE_URL:-}
+      - MONGODB_URI=mongodb://mongodb:27017
+      - MONGODB_DB=LibreChat
+      - LIBRECHAT_FM_SAVE_URL=http://LibreChat:${PORT:-3080}/api/internal/fm-save
+      - NYAY_SERVICE_KEY=${NYAY_SERVICE_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MAX_PAGES=${OCR_MAX_PAGES:-10}
+      - TRANSLATE_CHUNK_SIZE=1800
+      - SUMMARY_MODEL=gpt-4.1-mini
+      - LOG_LEVEL=INFO
+    depends_on:
+      - mongodb
+      - api
+    networks:
+      - default
+      - paralx-network
 
   #Mongo Express for DB management
   mongo-express:

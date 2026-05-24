@@ -561,6 +561,32 @@ router.get('/manager/:fileId/download-url', async (req, res) => {
   }
 });
 
+router.get('/manager/:fileId/content', async (req, res) => {
+  try {
+    const file = await File.findOne({
+      file_id: req.params.fileId,
+      user: req.user.id,
+      context: FileContext.message_attachment,
+    }).lean();
+
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    const { getDownloadStream } = getStrategyFunctions(file.source);
+    if (!getDownloadStream) {
+      return res.status(501).json({ message: 'Download not supported for this file source' });
+    }
+
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    const stream = await getDownloadStream(req, file.filepath);
+    stream.pipe(res);
+  } catch (error) {
+    logger.error('[/files/manager/:fileId/content] Error:', error);
+    res.status(error.statusCode || 500).json({ message: error.message || 'Failed to get file content' });
+  }
+});
+
 router.get('/', async (req, res) => {
   try {
     const appConfig = req.config;

@@ -273,7 +273,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Find, rank, verify, and analyse Indian case law. Judicial hierarchy weighting, negative treatment detection, three-source citation pipeline."
+      description: |
+        Find and verify Indian case law across the Supreme Court and all High Courts.
+        NyayAI's three-source citation pipeline ranks authorities by judicial hierarchy and flags negative treatment before output.
+        Every citation is tagged [VERIFIED] or [VERIFY REQUIRED] — nothing unverified reaches your brief.
+        Use when you need to identify the leading authorities on any legal proposition.
       greeting: |
         ⚖️ **Case Research**
 
@@ -307,7 +311,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Full five-step legal issue analysis: applicable law → verified precedents → synthesis → strategic options → risks."
+      description: |
+        Full five-step research workflow for any complex legal matter — applicable law, verified precedents, synthesis of the current position, strategic options, and recommended approach.
+        Anchors every proposition to the verified case law pipeline and flags conflicting or overruled authorities.
+        Use for deep pre-litigation assessment, advisory opinions, or preparing written arguments on a contested legal issue.
+        Delivers a structured strategy memo, not just a list of citations.
       greeting: |
         ⚖️ **Issue Analysis**
 
@@ -343,7 +351,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Writ maintainability analysis under Article 226 / Article 32 — alternate remedy, locus standi, delay/laches, relief matrix."
+      description: |
+        Maintainability analysis for Article 226 (High Court) and Article 32 (Supreme Court) writ petitions.
+        Covers the alternate remedy bar, locus standi, delay and laches, and the appropriate writ type for the relief claimed.
+        Flags jurisdictional pitfalls before filing and maps the relief sought to the correct writ form.
+        Use to assess whether your matter is fit for the writ jurisdiction before briefing counsel.
       greeting: |
         ⚖️ **Writ Jurisdiction**
 
@@ -374,7 +386,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Criminal law research — bail jurisprudence (anticipatory/regular/statutory), FIR validity, charge sustainability, quashing. BNSS 2023 / BNS 2023 aware."
+      description: |
+        Research under both Indian criminal law regimes — BNSS 2023 / BNS 2023 / BSA 2023 for offences on or after 1 July 2024, and CrPC / IPC / Evidence Act for earlier offences.
+        Covers bail jurisprudence (anticipatory, regular, and statutory bail), FIR validity, charge sustainability, and quashing under s.482 CrPC / s.528 BNSS.
+        Every proposition is anchored to verified Supreme Court and High Court authorities.
+        Use for bail applications, charge-framing challenges, quashing petitions, and trial strategy research.
       greeting: |
         ⚖️ **Criminal Law**
 
@@ -405,7 +421,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Commercial dispute research — ICA 1872, Arbitration Act 1996, injunction standards, specific performance, limitation, Commercial Courts Act."
+      description: |
+        Research for contract disputes, arbitration, injunctions, and commercial court matters under Indian law.
+        Covers the Indian Contract Act 1872, Arbitration and Conciliation Act 1996, specific performance, interim injunction standards (balance of convenience / irreparable harm), limitation, and the Commercial Courts Act.
+        Applicable to disputes before Civil Courts, Commercial Courts, NCLT, and arbitral tribunals.
+        Use for pre-litigation assessment, arbitration clause analysis, or preparing arguments on any commercial dispute.
       greeting: |
         ⚖️ **Commercial Disputes**
 
@@ -436,7 +456,11 @@ endpoints:
       addParams:
         max_tokens: 16000
         stream: true
-      description: "Constitutional law research — fundamental rights (Articles 12–35), proportionality, Article 14 arbitrariness, PIL, judicial review, legislative competence."
+      description: |
+        Research on fundamental rights (Articles 12–35), proportionality doctrine, Article 14 arbitrariness review, PIL maintainability, and legislative competence.
+        Covers landmark Supreme Court constitutional bench decisions and the current doctrinal position on judicial review of executive and legislative action.
+        Use for writ petitions challenging state action, policy, or legislation, or for advisory opinions on constitutional validity.
+        Every authority is tagged by bench composition and constitutional bench status.
       greeting: |
         ⚖️ **Constitutional Law**
 
@@ -500,7 +524,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Set up your litigation practice profile — court landscape, risk calibration, citation style, integrations."
+      description: |
+        Set up your firm's litigation practice profile — the foundation for every NyayAI skill.
+        Provide your practice areas, courts, risk thresholds, escalation norms, and citation style in a guided interview.
+        NyayAI calibrates every skill output — risk ratings, flag levels, and drafting tone — against this profile.
+        Run once when you first onboard, or whenever your practice focus changes significantly.
       greeting: |
         Welcome to Practice Setup!
 
@@ -530,7 +558,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Open a new case — conflicts, risk triage, key dates, limitation analysis, writes case.md and _log.yaml."
+      description: |
+        Register a new matter and build the initial case file.
+        Provide the client's instructions, key facts, parties, court, and cause of action — NyayAI identifies the limitation date, runs a conflicts check, and flags early risk signals.
+        The case is saved to your portfolio and becomes available to all active-litigation skills.
+        Every skill that works on a specific matter depends on a completed Case Intake entry.
       greeting: |
         Welcome to Case Intake!
 
@@ -557,7 +589,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Log a hearing outcome, new development, or risk triage refresh — appends to history.md, refreshes limitation countdown."
+      description: |
+        Record what happened at a hearing, conference, or in-chambers event.
+        Update the next hearing date, log orders passed, and note any new evidence or witnesses.
+        NyayAI appends the update to the case history and recalculates stale risk or limitation flags.
+        Keep this current after every court appearance to maintain an accurate portfolio view.
       greeting: |
         Welcome to Case Update!
 
@@ -582,7 +618,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Portfolio-wide rollup — risk distribution, upcoming hearings, limitation deadlines, preservation status, stale matters."
+      description: |
+        See a risk-rated overview of your entire active litigation portfolio.
+        Surfaces hearing dates in the next 60 days, approaching limitation cliffs, preservation notice gaps, and matters that have gone stale since the last update.
+        Critical items appear at the top with a suggested action for each.
+        Use as your daily or weekly practice health check — nothing falls through the gaps.
       greeting: |
         Welcome to Portfolio Status!
 
@@ -612,7 +652,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Build a chronology from matter documents — dated events, Limitation Act analysis, List of Dates for petition or brief."
+      description: |
+        Build a structured fact chronology for a matter, mapped to the applicable legal elements.
+        Events are ordered chronologically and tagged by relevance to the cause of action, defences, or relief claimed.
+        Gaps and unexplained intervals are flagged for follow-up.
+        Outputs in three formats: working chronology, List of Dates (for petitions), or Statement of Facts.
       greeting: |
         Welcome to Case Chronology!
 
@@ -641,7 +685,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Draft a brief section — grounds, submissions, statement of facts — with NyayAI judgment citations and BNS/BNSS supersession check."
+      description: |
+        Draft arguments, grounds of challenge, or written submissions for any section of a brief or petition.
+        Provide the legal issue, your factual matrix, and the relief sought — NyayAI drafts in proper legal style with cited propositions tagged [verify].
+        Covers writ petitions, appeals, written arguments, SLPs, and written statements.
+        All criminal provisions are verified against the BNS/BNSS supersession table before inclusion.
       greeting: |
         Welcome to Brief Section Drafter!
 
@@ -668,7 +716,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Draft a legal notice or demand letter — s.80 CPC, s.138 NI Act, s.21 Arbitration, MSMED, DV Act — with pre-suit gate check."
+      description: |
+        Draft a legal notice under Indian law for any cause of action.
+        Covers pre-suit demand notices, statutory notices under specific Acts, and pre-arbitration or consumer-forum notices.
+        All Indian pre-suit conditions are gate-checked first — s.80 CPC, s.138 NI Act, s.21 Arbitration Act, s.18 MSMED, s.4 DV Act — and privilege or admission risks are flagged before drafting.
+        Output follows the required format: addressee, facts, legal basis, demand, and response deadline.
       greeting: |
         Welcome to Demand / Legal Notice!
 
@@ -697,7 +749,11 @@ endpoints:
         - presence_penalty
         - top_p
         - stop
-      description: "Issue, refresh, or release evidence preservation notices — s.65B certificate notes, legal_hold fields in _log.yaml, next-refresh calendar."
+      description: |
+        Issue, track, and refresh preservation notices for electronically stored information and physical records.
+        Generates a notice tailored to the matter's facts and the custodians identified at intake, with s.65B certificate requirements flagged for electronic records.
+        Tracks the last refresh date and alerts when renewal is due across the portfolio.
+        Required for any matter with significant document-discovery risk or an upcoming e-discovery obligation.
       greeting: |
         Welcome to Legal Hold!
 
@@ -725,7 +781,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Customise your practice profile — amend risk thresholds, court landscape, house style, or integration settings without a full re-interview."
+      description: |
+        Update your practice profile without running the full setup interview.
+        Adjust risk thresholds, add a practice area, revise court and jurisdiction preferences, or change citation style and house drafting rules.
+        Changes take effect immediately across all active skills.
+        Use for mid-year practice adjustments or when onboarding a new practice group to NyayAI.
       greeting: |
         Welcome to Profile Customization!
 
@@ -748,7 +808,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Open a case workspace — pull up case.md, history, documents, and limitation status in one view for open-ended work on a matter."
+      description: |
+        Access the full case file for any matter in your portfolio — fact summary, procedural history, parties, risk rating, and key dates in one view.
+        Use as your reference before a hearing, client call, or drafting session.
+        All active-litigation skills (Chronology, Privilege Review, Witness Prep, Brief Drafter) can be launched from within the workspace.
+        Read-only view: no intake or update actions are performed here.
       greeting: |
         Welcome to Case Workspace!
 
@@ -769,7 +833,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Generate a concise case briefing — facts, legal issues, posture, next hearing, risk status — for a partner, client, or board note."
+      description: |
+        Generate a structured briefing for new counsel or a team member coming onto a matter.
+        Covers the facts, cause of action, procedural status, key legal issues, and immediate action items.
+        Specify the audience — partner, client, or board — and the briefing tone and detail level adjust accordingly.
+        Requires a completed Case Intake for the matter.
       greeting: |
         Welcome to Case Briefing!
 
@@ -790,7 +858,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Close a matter — record outcome, final cost, release legal hold, archive to closed status, draft closure note."
+      description: |
+        Close a matter and record the final outcome — judgment, settlement, dismissal, or withdrawal.
+        NyayAI flags any outstanding obligations before archiving: execution proceedings, appeal windows, compliance orders, or unreleased legal holds.
+        Generates a closure note for the file and marks the case inactive in the portfolio.
+        The matter remains searchable in closed status for reference.
       greeting: |
         Welcome to Close Case!
 
@@ -811,7 +883,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Review documents for legal professional privilege (LPP) and litigation privilege — applies Indian Evidence Act / Bharatiya Sakshya Adhiniyam standards."
+      description: |
+        Review documents and communications for legal professional privilege before disclosure or production.
+        Classifies each item as Privileged, Potentially Privileged, or Not Privileged under the Indian Evidence Act / Bharatiya Sakshya Adhiniyam standards.
+        Flags waiver risks from inadvertent disclosure, joint-interest sharing, or crime-fraud exception exposure.
+        Use before responding to discovery, RTI requests, or any court-directed document production obligation.
       greeting: |
         Welcome to Privilege Review!
 
@@ -832,7 +908,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Prepare examination-in-chief affidavit, cross-examination questions, and interrogatories for a witness — grounded in the case record."
+      description: |
+        Draft examination-in-chief outlines and cross-examination question sets for any witness.
+        Questions are anchored to the case's disputed facts and legal elements, with suggested exhibits to put to the witness.
+        Flags credibility points, prior inconsistent statements, and hearsay risks where identified.
+        Use to prepare for upcoming evidence hearings — covers EIC affidavits, cross-examination, and interrogatories.
       greeting: |
         Welcome to Witness Exam Prep!
 
@@ -855,7 +935,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Build an element chart or claim chart mapping each legal element to the evidence — used for infringement / revocation analysis."
+      description: |
+        Map the facts in your case to the legal elements required to establish — or defeat — the cause of action.
+        Identifies which elements are well-supported, which are disputed, and where the evidentiary gap lies.
+        Use to assess litigation risk, structure written submissions, and identify what evidence still needs to be gathered before the next hearing.
+        Also used for infringement and revocation analysis in IP matters.
       greeting: |
         Welcome to Element / Claim Chart!
 
@@ -876,7 +960,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Pre-drafting intake for an outbound legal notice — captures parties, facts, notice type, statutory basis (s.80 CPC / s.138 NI Act / s.21 Arbitration), leverage, and BATNA."
+      description: |
+        Register a legal notice received by your client and extract its key claims, demands, and response deadlines.
+        NyayAI creates a matter entry, identifies the statutory basis for the notice, and flags the response window.
+        Use as the starting point before drafting a reply or assessing your client's exposure to the inbound demand.
+        Pairs with Inbound Notice Triage for a full first-response workflow.
       greeting: |
         Welcome to Legal Notice Intake!
 
@@ -899,7 +987,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Triage an inbound legal notice or demand — extract fields, assess merit, check supersession, cross-check portfolio, present response options."
+      description: |
+        Quickly assess a received notice — legal, statutory, or regulatory — for urgency, risk level, and required response.
+        Identifies the issuing authority, the claim or demand, the applicable statutory basis, and the response deadline.
+        Runs a BNS/BNSS supersession check and cross-checks the portfolio for related active matters.
+        Use for first-pass triage before assigning the matter to a case handler.
       greeting: |
         Welcome to Inbound Notice Triage!
 
@@ -920,7 +1012,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Triage incoming court processes — summons, notices, orders — extract deadlines, identify procedural obligations, flag urgency."
+      description: |
+        Review a received court summons, notice, or process and identify the required response, filing deadline, and procedural obligations.
+        Distinguishes appearance-only requirements from substantive-response obligations.
+        Flags jurisdictional issues, service defects, and any grounds for challenge to the process.
+        Use as the first step after receiving any court paper — before assigning or diarising the matter.
       greeting: |
         Welcome to Court Process Triage!
 
@@ -941,7 +1037,11 @@ endpoints:
       summarize: false
       forcePrompt: false
       dropParams: [frequency_penalty, presence_penalty, top_p, stop]
-      description: "Draft outside counsel status request emails for active matters — one per case, structured with hearing dates, next steps, and cost-to-date."
+      description: |
+        Track the status of matters being managed by external counsel.
+        Drafts structured status request emails for all active matters with assigned outside counsel — hearing dates, next steps, deliverables, and cost-to-date.
+        Flags matters that have gone quiet or where a report from external counsel is overdue.
+        Use to maintain visibility across matters not handled in-house and to keep outside counsel accountable.
       greeting: |
         Welcome to Outside Counsel Status!
 

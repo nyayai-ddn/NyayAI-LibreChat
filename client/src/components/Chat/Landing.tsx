@@ -10,7 +10,7 @@ import {
   isDocDraftingEndpointName,
   isDocDraftingModelName,
 } from '~/features/agents/doc-drafting';
-import { NYAY_ENDPOINTS, NYAY_ENDPOINT_LABELS } from '~/features/agents/shared/nyayAgentRegistry';
+import { NYAY_ENDPOINTS, NYAY_ENDPOINT_LABELS, NYAY_ENDPOINT_DESCRIPTIONS } from '~/features/agents/shared/nyayAgentRegistry';
 import { useLocalize, useAuthContext } from '~/hooks';
 import { getIconEndpoint, getEntity } from '~/utils';
 
@@ -74,11 +74,14 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
   });
 
   const name = entity?.name ?? '';
-  const description = (entity?.description || conversation?.greeting) ?? '';
   const activeEndpoint = conversation?.endpoint ?? '';
   const activeModel = conversation?.model ?? '';
   const isNyayEndpoint = NYAY_ENDPOINTS.has(activeEndpoint);
   const nyayLabel = NYAY_ENDPOINT_LABELS[activeEndpoint] ?? '';
+  const description = (isNyayEndpoint ? NYAY_ENDPOINT_DESCRIPTIONS[activeEndpoint] : undefined)
+    ?? entity?.description
+    ?? conversation?.greeting
+    ?? '';
   const isDocDraftingLanding =
     isDocDraftingEndpointName(activeEndpoint) || isDocDraftingModelName(activeModel);
 
@@ -235,7 +238,7 @@ export default function Landing({ centerFormOnLanding }: { centerFormOnLanding: 
           )}
         </div>
         {description && (
-          <div className="animate-fadeIn mt-4 max-w-md text-center text-sm font-normal text-text-primary">
+          <div className={`animate-fadeIn mt-4 text-sm font-normal text-text-primary${isNyayEndpoint ? ' max-w-2xl text-left whitespace-pre-line' : ' max-w-md text-center'}`}>
             {description}
           </div>
         )}

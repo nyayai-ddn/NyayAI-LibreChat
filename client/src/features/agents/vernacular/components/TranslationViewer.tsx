@@ -6,8 +6,8 @@
  */
 import { useState } from 'react';
 import { Dialog, DialogPanel } from '@headlessui/react';
-import { X, Loader2, AlertTriangle, Paperclip } from 'lucide-react';
-import { useFileContent } from '../hooks/useFileContent';
+import { X, Paperclip } from 'lucide-react';
+import { DocumentViewer } from '~/components/DocumentViewer';
 import type { VernacularJob } from '../hooks/useOcrJobs';
 
 type Tab = 'ocr' | 'translate' | 'summary';
@@ -20,13 +20,13 @@ const TAB_CONFIG: { key: Tab; label: string }[] = [
 
 function TabPane({
   fileId,
+  filename,
   onAttach,
 }: {
   fileId: string | null | undefined;
+  filename: string;
   onAttach: (fileId: string) => void;
 }) {
-  const { data: content, isLoading, error } = useFileContent(fileId);
-
   if (!fileId) {
     return (
       <div className="flex h-full items-center justify-center text-sm text-text-secondary">
@@ -35,32 +35,10 @@ function TabPane({
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="flex h-full items-center justify-center gap-2 text-sm text-text-secondary">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Loading…
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center gap-2 text-sm">
-        <AlertTriangle className="h-6 w-6 text-yellow-500" />
-        <span className="text-text-secondary">
-          {error instanceof Error ? error.message : 'Failed to load content'}
-        </span>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-full flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        <pre className="whitespace-pre-wrap break-words p-4 font-sans text-sm leading-relaxed text-text-primary">
-          {content}
-        </pre>
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <DocumentViewer fileId={fileId} filename={filename} className="h-full" />
       </div>
       <div className="shrink-0 border-t border-border-light px-4 py-3">
         <button
@@ -157,6 +135,7 @@ export default function TranslationViewer({ open, onClose, sourceFilename, jobs,
             <TabPane
               key={currentTab}
               fileId={activeJob?.output_file_id}
+              filename={`${sourceFilename.replace(/\.[^.]+$/, '')}-${currentTab}.md`}
               onAttach={handleAttach}
             />
           </div>

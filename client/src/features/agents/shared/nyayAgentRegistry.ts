@@ -307,3 +307,157 @@ export const NYAY_ENDPOINT_LABELS: Record<string, string> = {
 };
 
 export const NYAY_ENDPOINTS = new Set(Object.keys(NYAY_ENDPOINT_LABELS));
+
+export const NYAY_ENDPOINT_DESCRIPTIONS: Record<string, string> = {
+  // ── Legal Research v3 skills ──────────────────────────────────────────────
+  [RESEARCH_CASE_ENDPOINT]:
+    'Find and verify Indian case law across the Supreme Court and all High Courts.\n' +
+    "NyayAI's three-source citation pipeline ranks authorities by judicial hierarchy and flags negative treatment before output.\n" +
+    'Every citation is tagged [VERIFIED] or [VERIFY REQUIRED] — nothing unverified reaches your brief.\n' +
+    'Use when you need to identify the leading authorities on any legal proposition.',
+
+  [RESEARCH_ISSUE_ENDPOINT]:
+    'Full five-step research workflow for any complex legal matter.\n' +
+    'Delivers applicable law, verified precedents, synthesis of the current position, strategic options, and a recommended approach.\n' +
+    'Anchors every proposition to the verified case law pipeline and flags conflicting or overruled authorities.\n' +
+    'Use for deep pre-litigation assessment, advisory opinions, or preparing written arguments.',
+
+  [RESEARCH_WRIT_ENDPOINT]:
+    'Maintainability analysis for Article 226 (High Court) and Article 32 (Supreme Court) writ petitions.\n' +
+    'Covers the alternate remedy bar, locus standi, delay and laches, and the correct writ type for the relief claimed.\n' +
+    'Flags jurisdictional pitfalls before filing and maps the relief to the appropriate writ form.\n' +
+    'Use to assess writ fitness before briefing counsel.',
+
+  [RESEARCH_CRIMINAL_ENDPOINT]:
+    'Research under both Indian criminal law regimes — BNSS 2023/BNS 2023/BSA 2023 for offences on or after 1 July 2024, and CrPC/IPC/Evidence Act for earlier offences.\n' +
+    'Covers bail jurisprudence (anticipatory, regular, statutory), FIR validity, charge sustainability, and quashing under s.482 CrPC / s.528 BNSS.\n' +
+    'Every proposition is anchored to verified Supreme Court and High Court authorities.\n' +
+    'Use for bail applications, charge-framing challenges, quashing petitions, and trial strategy research.',
+
+  [RESEARCH_COMMERCIAL_ENDPOINT]:
+    'Research for contract disputes, arbitration, injunctions, and commercial court matters under Indian law.\n' +
+    'Covers ICA 1872, Arbitration and Conciliation Act 1996, specific performance, interim injunction standards, limitation, and the Commercial Courts Act.\n' +
+    'Applicable to disputes before Civil Courts, Commercial Courts, NCLT, and arbitral tribunals.\n' +
+    'Use for pre-litigation assessment, arbitration clause analysis, or preparing arguments on any commercial dispute.',
+
+  [RESEARCH_CONSTITUTIONAL_ENDPOINT]:
+    'Research on fundamental rights (Articles 12–35), proportionality doctrine, Article 14 arbitrariness review, PIL maintainability, and legislative competence.\n' +
+    'Covers landmark Supreme Court constitutional bench decisions and the current position on judicial review of executive and legislative action.\n' +
+    'Use for writ petitions challenging state action, policy, or legislation, or advisory opinions on constitutional validity.\n' +
+    'Every authority is tagged by bench composition and constitutional bench status.',
+
+  // ── Litigation skills ─────────────────────────────────────────────────────
+  [LITIGATION_PRACTICE_SETUP_ENDPOINT]:
+    "Set up your firm's litigation practice profile — the foundation for every NyayAI skill.\n" +
+    'Provide your practice areas, courts, risk thresholds, escalation norms, and citation style in a guided interview.\n' +
+    'NyayAI calibrates every skill output — risk ratings, flag levels, and drafting tone — against this profile.\n' +
+    'Run once at onboarding, or whenever your practice focus changes significantly.',
+
+  [LITIGATION_CASE_INTAKE_ENDPOINT]:
+    'Register a new matter and build the initial case file.\n' +
+    "Provide the client's instructions, key facts, parties, court, and cause of action.\n" +
+    'NyayAI identifies the limitation date, runs a conflicts check, and saves the case to your portfolio.\n' +
+    'Every active-litigation skill depends on a completed Case Intake entry for the matter.',
+
+  [LITIGATION_CASE_UPDATE_ENDPOINT]:
+    'Record what happened at a hearing, conference, or in-chambers event.\n' +
+    'Update the next hearing date, log orders passed, and note any new evidence or witnesses.\n' +
+    'NyayAI appends the update to the case history and recalculates stale risk or limitation flags.\n' +
+    'Keep this current after every court appearance to maintain an accurate portfolio view.',
+
+  [LITIGATION_PORTFOLIO_ENDPOINT]:
+    'See a risk-rated overview of your entire active litigation portfolio.\n' +
+    'Surfaces hearing dates in the next 60 days, approaching limitation cliffs, and preservation notice gaps.\n' +
+    'Critical items appear at the top with a suggested action for each.\n' +
+    'Use as your daily or weekly practice health check — nothing falls through the gaps.',
+
+  [LITIGATION_CHRONOLOGY_ENDPOINT]:
+    'Build a structured fact chronology for a matter, mapped to the applicable legal elements.\n' +
+    'Events are ordered chronologically and tagged by relevance to the cause of action, defences, or relief claimed.\n' +
+    'Gaps and unexplained intervals are flagged for follow-up.\n' +
+    'Outputs in three formats: working chronology, List of Dates (for petitions), or Statement of Facts.',
+
+  [LITIGATION_BRIEF_DRAFTER_ENDPOINT]:
+    'Draft arguments, grounds of challenge, or written submissions for any section of a brief or petition.\n' +
+    'Provide the legal issue, factual matrix, and relief sought — NyayAI drafts in proper legal style with cited propositions tagged [verify].\n' +
+    'Covers writ petitions, appeals, written arguments, SLPs, and written statements.\n' +
+    'All criminal provisions are verified against the BNS/BNSS supersession table before inclusion.',
+
+  [LITIGATION_DEMAND_DRAFT_ENDPOINT]:
+    'Draft a legal notice under Indian law for any cause of action.\n' +
+    'Covers pre-suit demand notices, statutory notices under specific Acts, and pre-arbitration or consumer-forum notices.\n' +
+    'All Indian pre-suit conditions are gate-checked first — s.80 CPC, s.138 NI Act, s.21 Arbitration Act.\n' +
+    'Output follows the required format: addressee, facts, legal basis, demand, and response deadline.',
+
+  [LITIGATION_LEGAL_HOLD_ENDPOINT]:
+    'Issue, track, and refresh preservation notices for electronically stored information and physical records.\n' +
+    "Generates a notice tailored to the matter's facts and custodians identified at intake.\n" +
+    's.65B certificate requirements are flagged for electronic records; renewal alerts track refresh dates across the portfolio.\n' +
+    'Required for any matter with significant document-discovery risk.',
+
+  [LITIGATION_PROFILE_CUSTOMIZE_ENDPOINT]:
+    'Update your practice profile without running the full setup interview.\n' +
+    'Adjust risk thresholds, add a practice area, or revise court and jurisdiction preferences.\n' +
+    'Changes take effect immediately across all active skills.\n' +
+    'Use for mid-year practice adjustments or when onboarding a new practice group.',
+
+  [LITIGATION_CASE_WORKSPACE_ENDPOINT]:
+    'Access the full case file for any matter in one view — facts, procedural history, parties, risk rating, and key dates.\n' +
+    'Use as your reference before a hearing, client call, or drafting session.\n' +
+    'All active-litigation skills can be launched from within the workspace.\n' +
+    'Read-only: no intake or update actions are performed here.',
+
+  [LITIGATION_CASE_BRIEFING_ENDPOINT]:
+    'Generate a structured briefing for new counsel or a team member coming onto a matter.\n' +
+    'Covers facts, cause of action, procedural status, key legal issues, and immediate action items.\n' +
+    'Specify the audience — partner, client, or board — and the briefing tone adjusts accordingly.\n' +
+    'Requires a completed Case Intake for the matter.',
+
+  [LITIGATION_CASE_CLOSE_ENDPOINT]:
+    'Close a matter and record the final outcome — judgment, settlement, dismissal, or withdrawal.\n' +
+    'NyayAI flags outstanding obligations before archiving: execution proceedings, appeal windows, compliance orders, unreleased legal holds.\n' +
+    'Generates a closure note and marks the case inactive in the portfolio.\n' +
+    'The matter remains searchable in closed status for future reference.',
+
+  [LITIGATION_PRIVILEGE_REVIEW_ENDPOINT]:
+    'Review documents and communications for legal professional privilege before disclosure or production.\n' +
+    'Classifies each item as Privileged, Potentially Privileged, or Not Privileged under Indian Evidence Act / BSA standards.\n' +
+    'Flags waiver risks from inadvertent disclosure, joint-interest sharing, or crime-fraud exception exposure.\n' +
+    'Use before responding to discovery, RTI requests, or any court-directed document production.',
+
+  [LITIGATION_WITNESS_PREP_ENDPOINT]:
+    'Draft examination-in-chief outlines and cross-examination question sets for any witness.\n' +
+    'Questions are anchored to the case\'s disputed facts and legal elements, with suggested exhibits to put to the witness.\n' +
+    'Credibility points, prior inconsistent statements, and hearsay risks are flagged where identified.\n' +
+    'Use to prepare for upcoming evidence hearings — covers EIC affidavits, cross-examination, and interrogatories.',
+
+  [LITIGATION_ELEMENT_CHART_ENDPOINT]:
+    'Map the facts in your case to the legal elements required to establish — or defeat — the cause of action.\n' +
+    'Identifies which elements are well-supported, which are disputed, and where the evidentiary gap lies.\n' +
+    'Use to assess litigation risk, structure submissions, and identify evidence still needed before the next hearing.\n' +
+    'Also supports infringement and revocation analysis in IP matters.',
+
+  [LITIGATION_LEGAL_NOTICE_INTAKE_ENDPOINT]:
+    'Register a legal notice received by your client and extract its key claims, demands, and response deadlines.\n' +
+    'NyayAI creates a matter entry, identifies the statutory basis, and flags the response window.\n' +
+    'Use as the starting point before drafting a reply or assessing exposure from an inbound demand.\n' +
+    'Pairs with Inbound Notice Triage for a complete first-response workflow.',
+
+  [LITIGATION_INBOUND_TRIAGE_ENDPOINT]:
+    'Quickly assess a received notice — legal, statutory, or regulatory — for urgency, risk, and required response.\n' +
+    'Identifies the issuing authority, the claim or demand, and the applicable response deadline.\n' +
+    'Runs a BNS/BNSS supersession check and cross-checks the portfolio for related active matters.\n' +
+    'Use for first-pass triage before assigning the matter to a case handler.',
+
+  [LITIGATION_COURT_PROCESS_ENDPOINT]:
+    'Review a received court summons, notice, or process and identify the required response, filing deadline, and procedural obligations.\n' +
+    'Distinguishes appearance-only requirements from substantive-response obligations.\n' +
+    'Flags jurisdictional issues, service defects, and grounds for challenge to the process.\n' +
+    'Use as the first step after receiving any court paper — before assigning or diarising the matter.',
+
+  [LITIGATION_OC_STATUS_ENDPOINT]:
+    'Track the status of matters being managed by external counsel.\n' +
+    'Drafts structured status request emails for all active matters with assigned outside counsel.\n' +
+    'Flags matters that have gone quiet or where a report from outside counsel is overdue.\n' +
+    'Use to maintain visibility across matters not handled in-house and keep outside counsel accountable.',
+};

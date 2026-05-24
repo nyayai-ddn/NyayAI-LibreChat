@@ -43,5 +43,8 @@ export function useOcrAction(parentFileId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['ocr-jobs', parentFileId] });
     },
+    onError: (err: Error) => {
+      window.alert(`Action failed: ${err.message}`);
+    },
   });
 }
