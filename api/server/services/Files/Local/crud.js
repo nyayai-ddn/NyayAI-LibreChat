@@ -220,17 +220,19 @@ const deleteLocalFile = async (req, file) => {
     });
   }
 
-  if (cleanFilepath.startsWith(`/uploads/${req.user.id}`)) {
-    const userUploadDir = path.join(uploads, req.user.id);
-    const basePath = cleanFilepath.split(`/uploads/${req.user.id}/`)[1];
+  // Files under /uploads/ may be stored under req.user.id OR a conversationId subdirectory.
+  // Ownership is already verified by the MongoDB query at the call site.
+  if (cleanFilepath.startsWith('/uploads/')) {
+    const basePath = cleanFilepath.slice('/uploads/'.length);
 
     if (!basePath) {
       throw new Error(`Invalid file path: ${cleanFilepath}`);
     }
 
-    const filepath = path.join(userUploadDir, basePath);
+    const filepath = path.join(uploads, basePath);
 
-    const rel = path.relative(userUploadDir, filepath);
+    // Path traversal guard: resolved path must stay within the uploads root.
+    const rel = path.relative(uploads, filepath);
     if (rel.startsWith('..') || path.isAbsolute(rel) || rel.includes(`..${path.sep}`)) {
       throw new Error(`Invalid file path: ${cleanFilepath}`);
     }

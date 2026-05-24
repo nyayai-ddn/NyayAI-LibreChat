@@ -32,7 +32,7 @@ fi
 echo ""
 echo "Starting LibreChat services..."
 
-CORE_SERVICES=(api mongodb vectordb rag_api)
+CORE_SERVICES=(api mongodb vectordb rag_api nyay-ocr)
 START_SERVICES=("${CORE_SERVICES[@]}")
 
 if docker compose config --services 2>/dev/null | grep -qx "mongo-express"; then
@@ -73,6 +73,7 @@ echo "✅ LibreChat is running!"
 echo ""
 echo "   UI:           http://localhost:3080"
 echo "   API:          http://localhost:3080/api"
+echo "   OCR Service:  http://localhost:8100"
 echo ""
 echo "🔧 Available Endpoints:"
 echo "   - OpenAI (configure API key in UI)"
