@@ -8,7 +8,7 @@
         "secretsmanager:GetSecretValue",
         "secretsmanager:DescribeSecret"
       ],
-      "Resource": "arn:aws:secretsmanager:ap-south-1:ACCOUNT_ID:secret:nyayai/prod/platform-keys-*"
+      "Resource": "arn:aws:secretsmanager:ap-south-1:665680504236:secret:nyayai/prod/platform-keys-*"
     }
   ]
 }
