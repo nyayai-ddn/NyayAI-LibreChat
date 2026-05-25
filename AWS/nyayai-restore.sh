@@ -152,15 +152,20 @@ echo "[+] $(date +%T) NyayAI-ContractReview-v1"
 echo "============================================================"
 clone_or_pull "$CODE_DST/NyayAI-ContractReview-v1" "NyayAI-ContractReview-v1"
 
-echo "[+] Rebuilding legal-contract-agent service..."
+echo "[+] Configuring and rebuilding legal-contract-agent service..."
 cd "$CODE_DST/NyayAI-ContractReview-v1/legal-contract-agent"
+cp .env.ec2 .env
+inject_secret .env LLM__API_KEY       "$OPENAI_API_KEY"
+inject_secret .env EMBEDDING__API_KEY "$OPENAI_API_KEY"
 sudo -u ubuntu docker compose down || true
 sudo -u ubuntu docker compose up -d --build
 sudo -u ubuntu docker compose down
 echo "[✓] legal-contract-agent rebuilt."
 
-echo "[+] Rebuilding contract VectorDB service..."
+echo "[+] Configuring and rebuilding contract VectorDB service..."
 cd "$CODE_DST/NyayAI-ContractReview-v1/contract_VectorDB"
+cp .env.ec2 .env
+chmod +x *.sh
 sudo -u ubuntu docker compose down || true
 sudo -u ubuntu docker compose up -d --build
 sudo -u ubuntu docker compose down
@@ -196,7 +201,10 @@ echo "[+] $(date +%T) NyayAI-LegalResearch-v1"
 echo "============================================================"
 clone_or_pull "$CODE_DST/NyayAI-LegalResearch-v1" "NyayAI-LegalResearch-v1"
 
-cd "$CODE_DST/NyayAI-LegalResearch-v1"
+cd "$CODE_DST/NyayAI-LegalResearch-v1/legal-research-agent"
+cp .env.ec2 .env
+inject_secret .env LLM__API_KEY       "$OPENAI_API_KEY"
+inject_secret .env EMBEDDING__API_KEY "$OPENAI_API_KEY"
 sudo -u ubuntu docker compose down || true
 sudo -u ubuntu docker compose up -d --build
 sudo -u ubuntu docker compose down
@@ -289,14 +297,8 @@ chmod 755 uploads logs images
 chmod 644 librechat.yaml
 chmod +x *.sh
 
-cd "$CODE_DST/NyayAI-ContractReview-v1/contract_VectorDB"
-chmod +x *.sh
-cp .env.ec2 .env
-# ContractReview .env.ec2 uses its own key names — inject if present
-inject_secret .env OPENAI_API_KEY "$OPENAI_API_KEY" 2>/dev/null || true
-
 cd "$CODE_DST/NyayAI-ContractReview-v1/legal-contract-agent"
-chmod +x *.sh
+chmod +x *.sh 2>/dev/null || true
 
 cd "$CODE_DST/NyayAI-LangTranslate-v1"
 # env vars injected via LibreChat override — no .env copy needed here
@@ -350,6 +352,14 @@ fi
 if ! pgrep -f "ollama serve" >/dev/null; then
   sudo -u ubuntu bash -c "OLLAMA_HOST=0.0.0.0:$OLLAMA_PORT nohup ollama serve > /home/ubuntu/ollama.log 2>&1 &"
 fi
+
+# ── Start LibreChat + nyay-ocr ────────────────────────────────────────────────
+echo "========================================"
+echo "[+] $(date +%T) Starting NyayAI services..."
+echo "========================================"
+cd "$CODE_DST/NyayAI-LibreChat"
+sudo -u ubuntu bash -c "./start.sh"
+echo "[✓] NyayAI services started."
 
 # ── Done ──────────────────────────────────────────────────────────────────────
 touch "$MARKER_FILE"
