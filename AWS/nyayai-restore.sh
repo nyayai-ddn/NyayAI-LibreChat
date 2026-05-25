@@ -19,6 +19,8 @@ echo "[+] NyayAI restore started at $(date)"
 echo "========================================"
 
 S3_BUCKET="s3://nyayai-legal-data"
+SECRET_NAME="nyayai/prod/platform-keys"
+AWS_REGION="ap-south-1"
 
 CODE_DST="/home/ubuntu/NyayAI_Demo"
 CODE_SRC="$S3_BUCKET/ebs-backup/NyayAI_Demo"
@@ -35,6 +37,54 @@ OLLAMA_PORT="11434"
 GITHUB_ORG="https://github.com/nyayai-ddn"
 
 id ubuntu >/dev/null 2>&1 || useradd -m ubuntu
+
+# ── Install jq (needed for secret parsing) ────────────────────────────────────
+if ! command -v jq >/dev/null 2>&1; then
+  apt-get update -y -qq
+  apt-get install -y -qq jq
+fi
+
+# ── Fetch secrets from AWS Secrets Manager ────────────────────────────────────
+echo "========================================"
+echo "[+] $(date +%T) Fetching secrets from AWS Secrets Manager..."
+echo "========================================"
+SECRET_JSON=$(aws secretsmanager get-secret-value \
+  --region "$AWS_REGION" \
+  --secret-id "$SECRET_NAME" \
+  --query SecretString \
+  --output text)
+
+# Parse each secret into a shell variable
+OPENAI_API_KEY=$(echo "$SECRET_JSON"     | jq -r '.OPENAI_API_KEY')
+ANTHROPIC_API_KEY=$(echo "$SECRET_JSON" | jq -r '.ANTHROPIC_API_KEY')
+SARVAM_API_KEY=$(echo "$SECRET_JSON"    | jq -r '.SARVAM_API_KEY')
+NYAY_SERVICE_KEY=$(echo "$SECRET_JSON"  | jq -r '.NYAY_SERVICE_KEY')
+CREDS_KEY=$(echo "$SECRET_JSON"         | jq -r '.CREDS_KEY')
+CREDS_IV=$(echo "$SECRET_JSON"          | jq -r '.CREDS_IV')
+JWT_SECRET=$(echo "$SECRET_JSON"        | jq -r '.JWT_SECRET')
+JWT_REFRESH_SECRET=$(echo "$SECRET_JSON"| jq -r '.JWT_REFRESH_SECRET')
+MEILI_MASTER_KEY=$(echo "$SECRET_JSON"  | jq -r '.MEILI_MASTER_KEY')
+
+echo "[✓] Secrets fetched."
+
+# ── Helper: inject a key=value into an .env file ──────────────────────────────
+# Replaces an existing blank line (KEY=) or appends if key not present.
+# Uses python3 to safely handle special characters in values.
+inject_secret() {
+  local file="$1" key="$2" value="$3"
+  python3 -c "
+import sys, re
+key, val, path = sys.argv[1], sys.argv[2], sys.argv[3]
+data = open(path).read()
+pattern = r'^' + re.escape(key) + r'=.*'
+replacement = key + '=' + val
+if re.search(pattern, data, re.MULTILINE):
+    data = re.sub(pattern, replacement, data, flags=re.MULTILINE)
+else:
+    data += '\n' + replacement + '\n'
+open(path, 'w').write(data)
+" "$key" "$value" "$file"
+}
 
 # ── Wait for Docker daemon ─────────────────────────────────────────────────────
 echo "[+] Waiting for Docker daemon..."
@@ -122,8 +172,19 @@ echo "[+] $(date +%T) NyayAI-LibreChat"
 echo "============================================================"
 clone_or_pull "$CODE_DST/NyayAI-LibreChat" "NyayAI-LibreChat"
 
-echo "[+] Rebuilding LibreChat + nyay-ocr services..."
+echo "[+] Injecting secrets into LibreChat .env..."
 cd "$CODE_DST/NyayAI-LibreChat"
+inject_secret .env OPENAI_API_KEY     "$OPENAI_API_KEY"
+inject_secret .env ANTHROPIC_API_KEY  "$ANTHROPIC_API_KEY"
+inject_secret .env SARVAM_API_KEY     "$SARVAM_API_KEY"
+inject_secret .env NYAY_SERVICE_KEY   "$NYAY_SERVICE_KEY"
+inject_secret .env CREDS_KEY          "$CREDS_KEY"
+inject_secret .env CREDS_IV           "$CREDS_IV"
+inject_secret .env JWT_SECRET         "$JWT_SECRET"
+inject_secret .env JWT_REFRESH_SECRET "$JWT_REFRESH_SECRET"
+inject_secret .env MEILI_MASTER_KEY   "$MEILI_MASTER_KEY"
+
+echo "[+] Rebuilding LibreChat + nyay-ocr services..."
 sudo -u ubuntu docker compose -f docker-compose.yml -f docker-compose.override.yml down || true
 sudo -u ubuntu docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --build
 sudo -u ubuntu docker compose -f docker-compose.yml -f docker-compose.override.yml down
@@ -149,6 +210,7 @@ clone_or_pull "$CODE_DST/NyayAI-LegalResearch-v3" "NyayAI-LegalResearch-v3"
 
 cd "$CODE_DST/NyayAI-LegalResearch-v3"
 cp .env.ec2 .env
+inject_secret .env OPENAI_API_KEY "$OPENAI_API_KEY"
 sudo -u ubuntu docker compose down || true
 sudo -u ubuntu docker compose up -d --build
 sudo -u ubuntu docker compose down
@@ -162,6 +224,8 @@ clone_or_pull "$CODE_DST/NyayAI-Litigation-v1" "NyayAI-Litigation-v1"
 
 cd "$CODE_DST/NyayAI-Litigation-v1"
 cp .env.ec2 .env
+inject_secret .env OPENAI_API_KEY  "$OPENAI_API_KEY"
+inject_secret .env NYAY_SERVICE_KEY "$NYAY_SERVICE_KEY"
 sudo -u ubuntu docker compose down || true
 sudo -u ubuntu docker compose up -d --build
 sudo -u ubuntu docker compose down
@@ -228,6 +292,8 @@ chmod +x *.sh
 cd "$CODE_DST/NyayAI-ContractReview-v1/contract_VectorDB"
 chmod +x *.sh
 cp .env.ec2 .env
+# ContractReview .env.ec2 uses its own key names — inject if present
+inject_secret .env OPENAI_API_KEY "$OPENAI_API_KEY" 2>/dev/null || true
 
 cd "$CODE_DST/NyayAI-ContractReview-v1/legal-contract-agent"
 chmod +x *.sh
