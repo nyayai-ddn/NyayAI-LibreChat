@@ -1,6 +1,6 @@
 {
-  "name": "LibreChat",
-  "version": "v0.8.1-rc1",
+  "name": "NyayAI",
+  "version": "v1.0.0",
   "description": "",
   "workspaces": [
     "api",
