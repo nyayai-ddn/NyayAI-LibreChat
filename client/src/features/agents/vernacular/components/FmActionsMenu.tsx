@@ -43,7 +43,7 @@ function itemCls(active: boolean, disabled = false) {
   return [
     'flex w-full items-center justify-between gap-3 px-3 py-2 text-sm',
     disabled
-      ? 'cursor-not-allowed opacity-40'
+      ? 'cursor-not-allowed text-gray-400 dark:text-gray-500'
       : active
         ? 'bg-surface-hover text-text-primary'
         : 'text-text-primary',
