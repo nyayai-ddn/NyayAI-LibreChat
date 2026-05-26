@@ -20,7 +20,7 @@ echo "========================================"
 
 S3_BUCKET="s3://nyayai-legal-data"
 SECRET_NAME="nyayai/prod/platform-keys"
-AWS_REGION="ap-south-1"
+AWS_REGION="us-east-1"
 
 CODE_DST="/home/ubuntu/NyayAI_Demo"
 CODE_SRC="$S3_BUCKET/ebs-backup/NyayAI_Demo"

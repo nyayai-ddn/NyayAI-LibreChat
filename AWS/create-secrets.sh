@@ -20,7 +20,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 ENV_FILE="$SCRIPT_DIR/../.env"
 SECRET_NAME="nyayai/prod/platform-keys"
-REGION="ap-south-1"     # ← change if your deployment region differs
+REGION="us-east-1"
 
 MODE="${1:-create}"
 
