@@ -34,7 +34,7 @@ QDRANT_SRC="$S3_BUCKET/qdrant/volume-backups"
 DATA_MOUNT="/data"
 OLLAMA_PORT="11434"
 
-GITHUB_ORG="https://github.com/nyayai-ddn"
+GITHUB_ORG="https://github.com/nyayai-ddn"  # overridden below once token is known
 
 id ubuntu >/dev/null 2>&1 || useradd -m ubuntu
 
@@ -64,8 +64,14 @@ CREDS_IV=$(echo "$SECRET_JSON"          | jq -r '.CREDS_IV')
 JWT_SECRET=$(echo "$SECRET_JSON"        | jq -r '.JWT_SECRET')
 JWT_REFRESH_SECRET=$(echo "$SECRET_JSON"| jq -r '.JWT_REFRESH_SECRET')
 MEILI_MASTER_KEY=$(echo "$SECRET_JSON"  | jq -r '.MEILI_MASTER_KEY')
+GITHUB_TOKEN=$(echo "$SECRET_JSON"     | jq -r '.GITHUB_TOKEN // empty')
 
 echo "[✓] Secrets fetched."
+
+# Embed token in GitHub org base URL so all clone_or_pull calls authenticate
+if [ -n "$GITHUB_TOKEN" ]; then
+  GITHUB_ORG="https://${GITHUB_TOKEN}@github.com/nyayai-ddn"
+fi
 
 # ── Helper: inject a key=value into an .env file ──────────────────────────────
 # Replaces an existing blank line (KEY=) or appends if key not present.
@@ -358,7 +364,7 @@ echo "========================================"
 echo "[+] $(date +%T) Starting NyayAI services..."
 echo "========================================"
 cd "$CODE_DST/NyayAI-LibreChat"
-sudo -u ubuntu bash -c "./start.sh"
+sudo -u ubuntu bash -c "./AWS/start-all.sh"
 echo "[✓] NyayAI services started."
 
 # ── Done ──────────────────────────────────────────────────────────────────────
