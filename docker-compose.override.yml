@@ -24,6 +24,10 @@ services:
       - OLLAMA_BASE_URL=http://host.docker.internal:11434
       # OCR service — referenced by the /api/nyay/ocr proxy routes
       - OCR_SERVICE_URL=http://nyay-ocr:8100
+      - MATTER_SERVICE_URL=http://matter-service:8000
+      - DOCUMENT_SERVICE_URL=http://document-service:8230
+      - COPILOT_SERVICE_URL=http://ai-copilot-service:8220
+      - LPMS_JWT_SECRET=${JWT_SECRET}
     networks:
       - default
       - paralx-network

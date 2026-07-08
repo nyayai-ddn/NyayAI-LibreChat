@@ -147,6 +147,9 @@ const startServer = async () => {
   app.use('/api/drafting-assistant', require('./routes/draftingAssistant'));
   app.use('/api/willgen', require('./routes/willgen'));
   app.use('/api/nyay/ocr', require('./routes/nyayOcr'));
+  app.use('/api/v1', require('./routes/nyayMatter'));
+  app.use('/documents', require('./routes/nyayDocuments'));
+  app.use('/copilot', require('./routes/nyayCopilot'));
   app.use('/api/internal', require('./routes/internal/fmSave')(appConfig));
   app.use('/api/internal', require('./routes/internal/nyayFile')(appConfig));
   app.use('/api/internal', require('./routes/internal/nyayFileDownload')(appConfig));

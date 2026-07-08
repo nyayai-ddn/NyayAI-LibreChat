@@ -59,6 +59,11 @@ export interface NavItem {
   model: string;
   /** When true, renders as a phase-group divider label instead of a clickable item. */
   divider?: true;
+  /**
+   * When set, clicking this item navigates to the given React Router path
+   * instead of creating a new conversation. Used for non-chat panels (e.g. Matter Management).
+   */
+  routePath?: string;
 }
 
 export interface NavSection {
@@ -70,6 +75,11 @@ export interface NavSection {
 /** Convenience factory for divider entries — no endpoint, just a visual label. */
 function div(label: string): NavItem {
   return { label, endpointName: '', model: '', divider: true };
+}
+
+/** Convenience factory for route-linked items (no endpoint or model needed). */
+function route(label: string, routePath: string): NavItem {
+  return { label, endpointName: '', model: '', routePath };
 }
 
 export const NYAY_NAV_CONFIG: NavSection[] = [
@@ -268,6 +278,17 @@ export const NYAY_NAV_CONFIG: NavSection[] = [
         endpointName: LITIGATION_LEGAL_HOLD_ENDPOINT,
         model: LITIGATION_LEGAL_HOLD_MODEL,
       },
+    ],
+  },
+
+  // ── Matter Management (LPMS) ──────────────────────────────────────────────
+  {
+    sectionLabel: 'Matter Management',
+    iconPath:
+      'M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 8c-2 0-6 1-6 3v1h12v-1c0-2-4-3-6-3z',
+    items: [
+      route('Matters', '/matters'),
+      route('My Tasks', '/matters?tab=inbox'),
     ],
   },
 ];

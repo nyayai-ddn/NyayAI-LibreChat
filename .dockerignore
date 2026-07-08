@@ -5,6 +5,7 @@
 **/.DS_Store
 **/.vscode
 **/node_modules
+client/dist
 
 # Specific patterns to ignore
 data-node

@@ -20,6 +20,8 @@ import ShareRoute from './ShareRoute';
 import ChatRoute from './ChatRoute';
 import Search from './Search';
 import Root from './Root';
+import MatterListRoute from '~/features/matters/routes/MatterListRoute';
+import MatterDetailRoute from '~/features/matters/routes/MatterDetailRoute';
 
 const AuthLayout = () => (
   <AuthContextProvider>
@@ -126,6 +128,15 @@ export const router = createBrowserRouter(
                   <AgentMarketplace />
                 </MarketplaceProvider>
               ),
+            },
+            // ── Matter Management (LPMS) ────────────────────────────────────
+            {
+              path: 'matters',
+              element: <MatterListRoute />,
+            },
+            {
+              path: 'matters/:matterId',
+              element: <MatterDetailRoute />,
             },
           ],
         },

@@ -157,6 +157,9 @@ export default function NyayFeatureNav() {
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>(loadOpenGroups);
   const activeEndpoint = searchParams.get('endpoint') ?? '';
 
+  // Track active route path for highlighting route-type items
+  const activePath = window.location.pathname + window.location.search;
+
   const toggleGroup = useCallback((label: string) => {
     setOpenGroups((prev) => {
       const isCurrentlyOpen = prev[label] ?? true;
@@ -168,6 +171,12 @@ export default function NyayFeatureNav() {
 
   const handleSelect = useCallback(
     (item: NavItem) => {
+      // Route-type items (e.g. Matter Management) navigate directly — no conversation
+      if (item.routePath) {
+        navigate(item.routePath);
+        return;
+      }
+
       newConversation({
         template: {
           endpoint: item.endpointName as never,
@@ -184,16 +193,14 @@ export default function NyayFeatureNav() {
   );
 
   const visibleSections = NYAY_NAV_CONFIG.map((section) => {
-    // Keep dividers as-is; filter non-divider items by live endpoint presence.
     const filtered = section.items.filter(
       (item) =>
         item.divider ||
+        item.routePath ||  // route-type items are always visible
         (endpointsConfig && (endpointsConfig as Record<string, unknown>)[item.endpointName]),
     );
-    // Remove dividers that have no real items following them (dangling headers).
     const cleaned = filtered.filter((item, idx) => {
       if (!item.divider) return true;
-      // Keep the divider only if a non-divider item appears after it.
       return filtered.slice(idx + 1).some((next) => !next.divider);
     });
     return { ...section, items: cleaned };
@@ -208,7 +215,11 @@ export default function NyayFeatureNav() {
       {visibleSections.map((section) => {
         const { sectionLabel, items } = section;
         const isOpen = openGroups[sectionLabel] ?? true;
-        const isSectionActive = items.some((item) => item.endpointName === activeEndpoint);
+        const isSectionActive = items.some(
+          (item) =>
+            item.endpointName === activeEndpoint ||
+            (item.routePath && activePath.startsWith(item.routePath.split('?')[0])),
+        );
         return (
           <div key={sectionLabel} className="nyay-group">
             <SectionHeader
@@ -224,10 +235,14 @@ export default function NyayFeatureNav() {
                     <GroupDivider key={`divider-${idx}`} label={item.label} />
                   ) : (
                     <SubItem
-                      key={item.endpointName}
+                      key={item.routePath ?? item.endpointName}
                       item={item}
                       onSelect={handleSelect}
-                      isActive={item.endpointName === activeEndpoint}
+                      isActive={
+                        item.routePath
+                          ? activePath.startsWith(item.routePath.split('?')[0])
+                          : item.endpointName === activeEndpoint
+                      }
                     />
                   ),
                 )}
