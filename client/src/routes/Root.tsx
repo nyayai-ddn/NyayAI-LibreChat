@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+import posthog from 'posthog-js';
 import type { ContextType } from '~/common';
 import {
   useSearchEnabled,
@@ -29,10 +30,27 @@ export default function Root() {
     return savedNavVisible !== null ? JSON.parse(savedNavVisible) : true;
   });
 
-  const { isAuthenticated, logout } = useAuthContext();
+  const { isAuthenticated, logout, user } = useAuthContext();
 
   // Global health check - runs once per authenticated session
   useHealthCheck(isAuthenticated);
+
+  // Tie GA4 + Clarity + PostHog events to the logged-in user so usage rolls up per user, not just per session
+  useEffect(() => {
+    const win = window as typeof window & {
+      gtag?: (...args: unknown[]) => void;
+      clarity?: (...args: unknown[]) => void;
+    };
+    if (isAuthenticated && user?.id) {
+      win.gtag?.('set', { user_id: user.id });
+      win.clarity?.('identify', user.id);
+      posthog.identify(user.id, {
+        email: user.email,
+        name: user.name,
+        org: user.company_slug,
+      });
+    }
+  }, [isAuthenticated, user]);
 
   const assistantsMap = useAssistantsMap({ isAuthenticated });
   const agentsMap = useAgentsMap({ isAuthenticated });
